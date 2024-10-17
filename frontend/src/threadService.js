@@ -1,25 +1,8 @@
 import { API } from './config.js';
-import { TOKEN_KEY, USER_KEY } from './config.js';
-import { post, get, showErrorMessage, formatDate } from './helpers.js';
+import { TOKEN_KEY, USER_KEY, THREAD_KEY } from './config.js';
+import { post, get, put, deleteRequest, showErrorMessage, formatDate } from './helpers.js';
 import { getProfile } from './userService.js';
 
-
-
-async function newThread(title, isPublic, content) {
-    try {
-        const response = await post(API + "/thread", { title, isPublic, content }, localStorage.getItem(TOKEN_KEY));
-        if (!response.error) {
-            const { id } = response;
-            console.log(`Post ${id} new thread successfully!`);
-            // getThreadList(0);
-            return id;
-        } else {
-            throw new Error(response.error);
-        }
-    } catch (error) {
-        throw error;
-    }
-}
 
 export function setupNewThread() {
     clearThreadContainer();
@@ -73,7 +56,67 @@ export function setupNewThread() {
     });
 }
 
+function setupEditThread(threadId) {
+    clearThreadContainer();
+    const template = document.getElementById("editThread");
+    const clone = template.content.cloneNode(true);
 
+    const threadContainer = document.getElementById("threadContainer");
+    threadContainer.appendChild(clone);
+
+
+    const cancelButton = threadContainer.querySelector("#cancelEdit");
+    const saveButton = threadContainer.querySelector("#saveEdit");
+
+    cancelButton.addEventListener("click", () => {
+        clearThreadContainer();
+    });
+
+    saveButton.addEventListener("click", () => {
+        const threadTitle = threadContainer.querySelector("#editTitle").value;
+        const radios = threadContainer.querySelectorAll('input[name="editVisibility"]');
+        const status = threadContainer.querySelectorAll('input[name="editStatus"]')
+        const threadContent = threadContainer.querySelector("#editContent").value;
+
+        let threadVisibility;
+        radios.forEach(radio => {
+            if (radio.checked) {
+                threadVisibility = radio.value === "true";
+            }
+        });
+
+        let threadStatus;
+        status.forEach(radio => {
+            if (radio.checked) {
+                threadVisibility = radio.value === "true";
+            }
+        });
+
+        if (threadTitle) {
+            saveButton.disabled = true;
+            editThread(threadId, threadTitle, threadVisibility, threadStatus, threadContent)
+                .then(id => {
+                    return getThread(threadId);
+                })
+                .then(threadDetails => {
+                    return getProfile(threadDetails.creatorId)
+                        .then(authorDetails => {
+                            setupThreadDetail(threadDetails, authorDetails);
+                        });
+                })
+                .catch(error => {
+                    console.error(error);
+                    showErrorMessage(error, "editThreadError");
+                })
+                .finally(() => {
+                    saveButton.disabled = false;
+                });
+        } else {
+            showErrorMessage("Thread's title can't be empty!", "editThreadError");
+        }
+    });
+
+}
 
 function setupThreadDetail(thread, author) {
     clearThreadContainer();
@@ -88,15 +131,263 @@ function setupThreadDetail(thread, author) {
     clone.querySelector('#threadTime').textContent = formatDate(thread.createdAt);
     clone.querySelector('#threadContent').textContent = thread.content;
 
-    //event listener for thread's interaction
-
     const threadContainer = document.getElementById("threadContainer");
     threadContainer.appendChild(clone);
+
+    if (toggleActionBox(thread.id, localStorage.getItem(USER_KEY))) {
+        const editButton = document.querySelector("#editThreadButton");
+        const deleteButton = document.querySelector("#deleteThreadButton")
+        //event listener for thread's interaction
+        editButton.addEventListener("click", () => {
+            console.log("edit's working")
+            setupEditThread(thread.id);
+        })
+
+        deleteButton.addEventListener("click", () => {
+            deleteThread(thread.id)
+                .catch(error => {
+                    console.error(error);
+                });
+        });
+        console.log(thread);
+        let userKey = Number(localStorage.getItem(USER_KEY));
+
+        let likes = [];
+        if (thread.likes && thread.likes.length > 0) {
+            try {
+                const parsedLikes = JSON.parse(thread.likes);
+                likes = Array.isArray(parsedLikes) ? parsedLikes : [parsedLikes];
+            } catch (error) {
+                console.error("Failed to parse 'likes':", error);
+                likes = [];
+            }
+        }
+        let liked = likes.includes(userKey);
+        const likeButton = document.querySelector("#like");
+        toggleLike(liked);
+
+        likeButton.addEventListener("click", () => {
+            if (liked) {
+                likeThread(thread.id, liked)
+                    .then(() => {
+                        liked = false;
+                        toggleLike(liked);
+                    })
+                    .catch(error => {
+                        console.error("Error unliking the thread:", error);
+                    });
+            } else {
+                likeThread(thread.id, liked)
+                    .then(() => {
+                        liked = true;
+                        toggleLike(liked);
+                    })
+                    .catch(error => {
+                        console.error("Error liking the thread:", error);
+                    });
+            }
+        });
+
+
+        let watchees = [];
+        if (thread.watchees && thread.watchees.length > 0) {
+            try {
+                const parsedwatchees = JSON.parse(thread.watchees);
+                watchees = Array.isArray(parsedwatchees) ? parsedwatchees : [parsedwatchees];
+            } catch (error) {
+                console.error("Failed to parse 'watchees':", error);
+                watchees = [];
+            }
+        }
+        let watched = watchees.includes(userKey);
+        const watchButton = document.querySelector("#watch");
+        toggleWatch(liked);
+        watchButton.addEventListener("click", () => {
+            if (watched) {
+                watchThread(thread.id, watched)
+                    .then(() => {
+                        watched = false;
+                        toggleWatch(watched);
+                    })
+                    .catch(error => {
+                        console.error("Error unliking the thread:", error);
+                    });
+            } else {
+                watchThread(thread.id, watched)
+                    .then(() => {
+                        liked = true;
+                        toggleWatch(watched);
+                    })
+                    .catch(error => {
+                        console.error("Error liking the thread:", error);
+                    });
+            }
+        });
+
+    }
+
+
+
 }
+
+function newThread(title, isPublic, content) {
+    return post(API + "/thread", { title, isPublic, content }, localStorage.getItem(TOKEN_KEY))
+        .then(response => {
+            if (!response.error) {
+                const { id } = response;
+                console.log(`Post ${id} new thread successfully!`);
+                storeOwnedThread(id);
+                populateThreadList(id, true);
+                return id;
+            } else {
+                throw new Error(response.error);
+            }
+        })
+}
+
+function storeOwnedThread(threadId) {
+    let ownedThread = [];
+    let ownedThreads = localStorage.getItem(THREAD_KEY);
+    if (ownedThreads) {
+        ownedThreads = JSON.parse(ownedThreads);
+    } else {
+        ownedThreads = [];
+    }
+    if (!ownedThread.includes(threadId)) {
+        ownedThread.push(threadId);
+    }
+    localStorage.setItem(THREAD_KEY, JSON.stringify(ownedThreads));
+}
+
+function removeOwnedThread(threadId) {
+    let ownedThreads = localStorage.getItem(THREAD_KEY);
+    if (ownedThreads) {
+        ownedThreads = JSON.parse(ownedThreads);
+    } else {
+        ownedThreads = [];
+    }
+    const index = ownedThreads.indexOf(threadId);
+    if (index !== -1) {
+        ownedThreads.splice(index, 1);
+        localStorage.setItem(THREAD_KEY, JSON.stringify(ownedThreads));
+    }
+}
+
+function editThread(id, title, isPublic, lock, content) {
+    return put(API + "/thread", { id, title, isPublic, lock, content }, localStorage.getItem(TOKEN_KEY))
+        .then(response => {
+            if (!response.error) {
+                console.log(`Edit thread ${id} successfully!`);
+                return id;
+            }
+            else {
+                throw new Error(response.error);
+            }
+        })
+}
+
+function deleteThread(id) {
+    return deleteRequest(API + "/thread", { id }, localStorage.getItem(TOKEN_KEY))
+        .then(response => {
+            if (!response.error) {
+                console.log(`Delete thread ${id} successfully!`);
+                removeOwnedThread(id);
+                removeFromThreadList(id);
+                clearThreadContainer();
+                return id;
+            } else {
+                throw new Error(response.error);
+            }
+        })
+}
+function removeFromThreadList(id) {
+    const thread = document.getElementById(id);
+    if (thread) {
+        thread.remove();
+    }
+}
+
+
+function toggleActionBox(threadId, userId) {
+    let ownedThreads = localStorage.getItem(THREAD_KEY);
+    if (ownedThreads) {
+        ownedThreads = JSON.parse(ownedThreads);
+    } else {
+        ownedThreads = [];
+    }
+    const actionBox = document.querySelector('.actionBox');
+
+    return new Promise((resolve, reject) => {
+        if (ownedThreads.includes(threadId)) {
+            actionBox.classList.remove("hidden");
+            resolve(true);
+        } else {
+            getThread(threadId)
+                .then(thread => {
+                    if (thread.creatorId == userId) {
+                        actionBox.classList.remove("hidden");
+                        resolve(true);
+                    } else {
+                        resolve(false);
+                    }
+                })
+                .catch(error => {
+                    console.error(error);
+                    reject(error);
+                });
+        }
+    });
+}
+
+function toggleLike(turnon) {
+    const likeButton = document.querySelector("#like");
+    if (turnon) {
+        likeButton.classList.add("text-red-500");
+    } else {
+        likeButton.classList.remove("text-red-500");
+    }
+}
+
+function toggleWatch(turnon) {
+    const watchButton = document.querySelector("#watch");
+    if (turnon) {
+        watchButton.classList.add("text-red-500");
+    } else {
+        watchButton.classList.remove("text-red-500");
+    }
+}
+
+function watchThread(id, current) {
+    let turnon = null;
+    current == false ? turnon = true : turnon = false;
+    return put(API + "/thread/watch", { id, turnon }, localStorage.getItem(TOKEN_KEY))
+        .then(response => {
+            if (!response.error) {
+                console.log(`Watch thread ${id} ${turnon ? "successfully" : "unlike successful"}!`);
+            } else {
+                throw new Error(response.error);
+            }
+        });
+}
+
+
+function likeThread(id, current) {
+    let turnon = null;
+    current == false ? turnon = true : turnon = false;
+    return put(API + "/thread/like", { id, turnon }, localStorage.getItem(TOKEN_KEY))
+        .then(response => {
+            if (!response.error) {
+                console.log(`Like thread ${id} ${turnon ? "successfully" : "unlike successful"}!`);
+            } else {
+                throw new Error(response.error);
+            }
+        });
+}
+
 
 export function getThread(id) {
     console.log(`Getting thread ${id}`)
-    return get(API + "/thread", {id: id}, localStorage.getItem('token'))
+    return get(API + "/thread", { id: id }, localStorage.getItem('token'))
         .then(data => {
             if (data) {
                 return data;
@@ -110,7 +401,7 @@ export function getThread(id) {
         });
 }
 
-export function populateThreadList(id) {
+export function populateThreadList(id, newThread = null) {
     getThread(id)
         .then(thread => {
             if (!thread) {
@@ -120,7 +411,7 @@ export function populateThreadList(id) {
                 if (!author) {
                     return Promise.reject(thread.error);
                 }
-                createThreadListItem(thread, author);
+                createThreadListItem(thread, author, newThread);
             });
         })
         .catch(error => {
@@ -128,19 +419,39 @@ export function populateThreadList(id) {
         });
 }
 
-function createThreadListItem(thread, author) {
+function createThreadListItem(thread, author, newThread) {
     const template = document.getElementById("threadListItemTemplate");
     const clone = template.content.cloneNode(true);
 
-    clone.querySelector(".threadItem").id = thread.id;
+    const threadItem = clone.querySelector(".threadItem");
+    threadItem.id = thread.id;
     clone.querySelector(".threadTitle").textContent = thread.title;
     clone.querySelector(".threadAuthor").textContent = `Posted by ${author.name}`;
-    clone.querySelector(".threadContent").textContent = thread.content;
+    let likeString = thread.likes.length != 1 ? "likes" : "like";
+    clone.querySelector(".threadTime").textContent = `${formatDate(thread.createdAt)} | ${thread.likes.length} ` + likeString;
 
-    const threadListContainer = document.getElementById("threadList");
+    const threadListContainer = newThread ? document.getElementById("newThreadBox") : document.getElementById("threadList");
     threadListContainer.appendChild(clone);
+
+    //Handle view thread event
+    threadItem.addEventListener('click', () => {
+        getThread(threadItem.id)
+            .then(thread => {
+                return thread;
+            })
+            .then(threadDetails => {
+                return getProfile(threadDetails.creatorId)
+                    .then(authorDetails => {
+                        setupThreadDetail(threadDetails, authorDetails);
+                    })
+            })
+            .catch(error => {
+                console.error(error);
+            })
+    })
 }
-function getThreadList(start) {
+
+export function getThreadList(start) {
     return get(API + "/threads", { start }, localStorage.getItem(TOKEN_KEY))
         .then(response => {
             if (response.error) {
@@ -150,8 +461,7 @@ function getThreadList(start) {
                     response.forEach(thread => {
                         populateThreadList(thread);
                     });
-
-                    localStorage.setItem("start", start + response.length);
+                    return response.length;
                 }
             }
         });

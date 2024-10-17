@@ -61,7 +61,6 @@ export function post(url, body = null, token = null) {
     });
 };
 
-
 export function get(url, query = null, token = null) {
   let requestURL = url;
   const headers = {
@@ -70,6 +69,9 @@ export function get(url, query = null, token = null) {
 
   if (token) {
     headers['Authorization'] = `Bearer ${token}`;
+  }
+  else {
+    Promise.reject(new Error("No token provided!"));
   }
   if (query !== null) {
     const queryString = new URLSearchParams(query).toString();
@@ -93,6 +95,64 @@ export function get(url, query = null, token = null) {
       throw error;
     });
 }
+
+export function put(url, body = null, token = null) {
+  if (body !== null && typeof body === 'string') {
+      return Promise.reject(new Error("Not allow type of body is string"));
+  }
+  const headers = {
+    'Content-Type': 'application/json',
+  };
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  else {
+    Promise.reject(new Error("No token provided!"));
+  }
+
+  const options = {
+      method: 'PUT',
+      headers: headers,
+      body: body ? JSON.stringify(body) : null
+  }
+
+  return fetch(url, options)
+      .then(response => {
+          if (!response.ok) {
+              throw new Error(response.error);
+          }
+          return response.json();
+      });
+}
+export function deleteRequest (url, body = null, token = null) {
+  const headers = {
+    'Content-Type': 'application/json',
+  };
+
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  const requestOptions = {
+    method: 'DELETE',
+    headers: headers,
+    body: JSON.stringify(body),
+  };
+
+  return fetch(url, requestOptions)
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      if (data.error) {
+        throw new Error(data.error);
+      }
+      return data;
+    })
+    .catch(error => {
+      throw error;
+    });
+};
 
 export function showPage(pageId) {
   document.querySelectorAll('#loginPage, #registerPage, #forumPage').forEach(page => {
@@ -128,7 +188,6 @@ export function showErrorMessage(message, placeHolder) {
 }
 
 export function formatDate(dateString) {
-  console.log(dateString);
   const date = new Date(dateString);
   const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   const day = String(date.getDate()).padStart(2, '0');
