@@ -14,8 +14,8 @@
 text-gray-100 antialiased">
 
     <!-- Login Page -->
-    <div id="login-page">
-        <div class="flex min-min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+    <div id="loginPage">
+        <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
             <div class="sm:mx-auto sm:w-full sm:max-w-sm">
                 <div class="text-white">Qanda 🦘</div>
                 <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-white">
@@ -23,28 +23,27 @@ text-gray-100 antialiased">
                 </h2>
 
                 <!-- Warning box-->
-                <div id="login-error"></div>
-
+                <div id="loginError"></div>
             </div>
 
             <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                <form class="space-y-6" id="login-form">
+                <form class="space-y-6" id="loginForm">
                     <div>
-                        <label for="login-email" class="block text-sm font-medium leading-6 text-gray-300">Email
+                        <label for="loginEmail" class="block text-sm font-medium leading-6 text-gray-300">Email
                             address</label>
                         <div class="mt-2">
-                            <input id="login-email" name="login-email" type="email" autocomplete="email" required
+                            <input id="loginEmail" name="loginEmail" type="email" autocomplete="email" required
                                 class="block w-full rounded-md border-0 py-1.5 text-white  bg-gray-700 shadow-sm ring-1 ring-inset ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" />
                         </div>
                     </div>
 
                     <div>
                         <div class="flex items-center justify-between">
-                            <label for="login-password"
+                            <label for="loginPassword"
                                 class="block text-sm font-medium leading-6 text-gray-300">Password</label>
                         </div>
                         <div class="mt-2">
-                            <input id="login-password" name="login-password" type="password"
+                            <input id="loginPassword" name="loginPassword" type="password"
                                 autocomplete="current-password" required
                                 class="block w-full rounded-md border-0 py-1.5 text-white bg-gray-700 shadow-sm ring-1 ring-inset ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" />
                         </div>
@@ -67,9 +66,10 @@ text-gray-100 antialiased">
         </div>
     </div>
 
+
     <!-- Register Page -->
-    <div id="register-page">
-        <div class="flex min-min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+    <div id="registerPage">
+        <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
             <div class="sm:mx-auto sm:w-full sm:max-w-sm">
                 <div class="text-white">Qanda 🦘</div>
                 <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-white">
@@ -78,28 +78,26 @@ text-gray-100 antialiased">
             </div>
 
             <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-
                 <!-- Warning box-->
-                <div id="register-error"></div>
+                <div id="registerError"></div>
 
-                <form class="space-y-6" id="register-form" method="POST">
+                <form class="space-y-6" id="registerForm" method="POST">
                     <!-- Email -->
                     <div>
-                        <label for="register-email" class="block text-sm font-medium leading-6 text-gray-300">Register
-                            email
-                            address</label>
+                        <label for="registerEmail" class="block text-sm font-medium leading-6 text-gray-300">
+                            Register email address
+                        </label>
                         <div class="mt-2">
-                            <input id="register-email" name="register-email" type="email" autocomplete="email" required
+                            <input id="registerEmail" name="registerEmail" type="email" autocomplete="email" required
                                 class="block w-full rounded-md border-0 py-1.5 text-white bg-gray-700 shadow-sm ring-1 ring-inset ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" />
                         </div>
                     </div>
 
                     <div>
                         <!-- Name -->
-                        <label for="register-name"
-                            class="block text-sm font-medium leading-6 text-gray-300">Name</label>
+                        <label for="registerName" class="block text-sm font-medium leading-6 text-gray-300">Name</label>
                         <div class="mt-2">
-                            <input id="register-name" register-name="register-name" type="text" required
+                            <input id="registerName" name="registerName" type="text" required
                                 class="block w-full rounded-md border-0 py-1.5 text-white bg-gray-700 shadow-sm ring-1 ring-inset ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" />
                         </div>
                     </div>
@@ -107,11 +105,11 @@ text-gray-100 antialiased">
                     <div>
                         <!-- Password -->
                         <div class="flex items-center justify-between">
-                            <label for="register-password"
+                            <label for="registerPassword"
                                 class="block text-sm font-medium leading-6 text-gray-300">Password</label>
                         </div>
                         <div class="mt-2">
-                            <input id="register-password" name="register-password" type="password" required
+                            <input id="registerPassword" name="registerPassword" type="password" required
                                 class="block w-full rounded-md border-0 py-1.5 text-white bg-gray-700 shadow-sm ring-1 ring-inset ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" />
                         </div>
                     </div>
@@ -119,12 +117,12 @@ text-gray-100 antialiased">
                     <div>
                         <!-- Confirm Password -->
                         <div class="flex items-center justify-between">
-                            <label for="confirm-password"
-                                class="block text-sm font-medium leading-6 text-gray-300">Confirm your
-                                Password</label>
+                            <label for="confirmPassword" class="block text-sm font-medium leading-6 text-gray-300">
+                                Confirm your Password
+                            </label>
                         </div>
                         <div class="mt-2">
-                            <input id="confirm-password" name="confirm-password" type="password" required
+                            <input id="confirmPassword" name="confirmPassword" type="password" required
                                 class="block w-full rounded-md border-0 py-1.5 text-white bg-gray-700 shadow-sm ring-1 ring-inset ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" />
                         </div>
                     </div>
@@ -146,8 +144,9 @@ text-gray-100 antialiased">
         </div>
     </div>
 
+
     <!-- Forum Page -->
-    <div id="forum-page">
+    <div id="forumPage">
         <div class="flex flex-row w-full h-screen">
 
             <!-- Navigation bar -->
@@ -235,9 +234,11 @@ text-gray-100 antialiased">
 
     <!-- Template for warning box -->
     <template id="warningBox">
-        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-3" role="alert">
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-3 overflow-x-auto" role="alert">
             <strong class="font-bold">Error!</strong>
-            <span class="block sm:inline warning-message"></span>
+            <span class="block sm:inline warningMessage">
+                <!-- Message will be inserted here -->
+            </span>
             <span class="absolute top-0 bottom-0 right-0 px-4 py-3 close-button-container">
                 <svg class="fill-current h-4 w-4 text-red-500 warning-button" role="button"
                     xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -482,7 +483,7 @@ text-gray-100 antialiased">
 
     <!--Template for comment-->
     <!-- Main Comment Template -->
-    <template id="mainCommentTemplate">
+    <template id="mainComment">
         <article class="p-6 text-base bg-white rounded-lg dark:bg-gray-900">
             <footer class="flex justify-between items-center mb-2">
                 <div class="flex items-center">
@@ -540,11 +541,14 @@ text-gray-100 antialiased">
                 </button>
             </div>
         </article>
+        <section id="subCommentBox">
+            <!-- Sub comment will be inserted here -->
+        </section>
     </template>
 
 
     <!-- Sub-Comment Template -->
-    <template id="subCommentTemplate">
+    <template id="subComment">
         <article class="p-6 mb-3 ml-6 lg:ml-12 text-base bg-white rounded-lg dark:bg-gray-900">
             <footer class="flex justify-between items-center mb-2">
                 <div class="flex items-center">

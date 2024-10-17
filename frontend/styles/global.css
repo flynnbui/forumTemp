@@ -1,0 +1,23 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+
+#loginPage,
+#registerPage,
+#forumPage {
+  width: 100vw;
+  height: 100vh;
+  display: none; 
+}
+
+
+#loginPage.active,
+#registerPage.active,
+#forumPage.active
+{
+  display: block;
+}
+
