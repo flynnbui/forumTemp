@@ -1,6 +1,7 @@
 import { TOKEN_KEY } from './config.js';
 import { login, logout, register } from './authService.js'
-import { showPage, showErrorMessage } from './helpers.js';
+import { setupNewThread } from './threadService.js';
+import { showPage, showErrorMessage, formatDate } from './helpers.js';
 console.log("Let's go!");
 
 function isSession() {
@@ -56,11 +57,23 @@ function setupRegisterPage() {
         e.preventDefault();
     })
 }
+
+
 function setupForumPage() {
-    //Set up logout button
+    //Logout button
     const logoutButton = document.getElementById("logout");
     logoutButton.addEventListener('click', logout);
+
+    //Add button
+    document.querySelectorAll(".add").forEach(button => {
+        button.addEventListener('click', () => {
+            setupNewThread();
+        });
+    });
 }
+
+
+
 
 
 

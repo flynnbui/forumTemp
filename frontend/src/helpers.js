@@ -110,21 +110,33 @@ export function showErrorMessage(message, placeHolder) {
   var messageSpan = clone.querySelector('.warningMessage');
   messageSpan.textContent = message;
 
-  var closeButton = clone.querySelector('.warning-button');
+  var closeButton = clone.querySelector('.warningButton');
   closeButton.addEventListener('click', function () {
     var warningBox = closeButton.closest('div[role="alert"]');
     if (warningBox) {
       warningBox.remove();
     }
   });
-  
+
   var warningContainer = document.getElementById(placeHolder);
   // Remove the old error box
-  warningContainer.textContent = '';
+  if (warningContainer) {
+    warningContainer.replaceChildren();
+  }
   // Append the error box to the placeholder container
   warningContainer.appendChild(clone);
 }
 
+export function formatDate(dateString) {
+  console.log(dateString);
+  const date = new Date(dateString);
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = months[date.getMonth()];
+  const year = date.getFullYear();
+  
+  return `${day} ${month} ${year}`;
+}
 
 
 
