@@ -82,8 +82,8 @@ function setupForumPage() {
 
 
 document.addEventListener("DOMContentLoaded", function () {
-    isSession();
     setupLoginPage();
     setupRegisterPage();
     setupForumPage();
+    isSession();
 });

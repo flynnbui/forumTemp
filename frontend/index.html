@@ -205,15 +205,18 @@
                         <div class="flex w-full text-white font-bold items-center p-3">
                             <div class="text-xl leading-7 w-3/4">Threads</div>
                             <div class="flex flex-grow items-center justify-center">
-                                <button
-                                    class="add flex items-center justify-center border-2 border-gray-700 rounded-full h-8 w-8 bg-gray-600"
-                                    aria-label="Add new thread">
-                                    <i class="fas fa-plus"></i>
+                                <button class="flex flex-grow items-center justify-center" aria-label="Add new thread">
+                                    <div class="mr-3">Create</div>
+                                    <div
+                                        class="add flex items-center justify-center border-2 border-gray-700 rounded-full h-8 w-8 bg-gray-600">
+                                        <i class="fas fa-plus"></i>
+                                    </div>
                                 </button>
                             </div>
                         </div>
                         <div id="threadList" class="flex-grow overflow-y-auto">
                             <!-- Thread list items go here -->
+                            <div id="newThreadBox"></div>
                         </div>
                     </div>
 
@@ -251,19 +254,20 @@
 
     <!-- Thread List Item Template -->
     <template id="threadListItemTemplate">
-        <a class="block bg-gray-800 p-4 hover:bg-gray-700 threadItem">
-            <div class="flex justify-between flex-col">
-                <h3 class="text-lg text-indigo-400 font-semibold threadTitle"></h3>
-                <span class="text-sm text-gray-400 thread-author"></span>
+        <button class="block h-24 w-full bg-gray-800 p-4 hover:bg-gray-700 threadItem text-left">
+            <div class="flex flex-col justify-between h-full overflow-hidden">
+                <div class="overflow-hidden">
+                    <h3 class="text-pink-200 text-sm font-semibold truncate threadTitle"></h3>
+                    <p class="text-xs text-gray-200 truncate threadTime"></p>
+                </div>
+                <span class="text-xs text-gray-400 truncate threadAuthor"></span>
             </div>
-            <p class="text-gray-200 mt-2 truncated threadContent"></p>
-            <div class="mt-3 flex justify-between items-center"></div>
-        </a>
+        </button>
         <!-- Vertical Line Separator -->
         <div class="w-full h-px bg-gray-500"></div>
     </template>
 
-    <!-- Template for thread's interaction -->
+    <!-- Template for thread's action -->
     <!-- New Thread -->
     <template id="newThread">
         <!-- Header Section with navigation and title -->
@@ -333,7 +337,7 @@
         <div class="flex w-full h-12 overflow-hidden">
             <div class="w-1/6 min-h-full">
                 <button class="flex items-center justify-center min-h-full w-full text-xl text-indigo-300"
-                    id="cancelBtn">
+                    id="cancelEdit">
                     Cancel
                 </button>
             </div>
@@ -343,8 +347,9 @@
                 </div>
             </div>
             <div class="w-1/6 min-h-full">
-                <button class="flex items-center justify-center min-h-full w-full text-xl text-indigo-300" id="postBtn">
-                    Post
+                <button class="flex items-center justify-center min-h-full w-full text-xl text-indigo-300"
+                    id="saveEdit">
+                    Save
                 </button>
             </div>
         </div>
@@ -385,6 +390,21 @@
                         </label>
                     </div>
                 </div>
+
+                <!-- Lock Radio Buttons -->
+                <div class="grid grid-cols-1 sm:grid-cols-4 gap-2 items-center">
+                    <span class="text-lg sm:text-xl text-white">Status:</span>
+                    <div class="col-span-1 sm:col-span-3 flex space-x-6">
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="editStatus" value="true" class="text-indigo-500" checked />
+                            <span class="ml-2 text-white text-sm">Lock</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="editStatus" value="false" class="text-indigo-500" />
+                            <span class="ml-2 text-white text-sm">Open</span>
+                        </label>
+                    </div>
+                </div>
             </form>
         </div>
     </template>
@@ -405,7 +425,7 @@
         <!-- Horizontal Divider -->
         <div class="w-full h-px bg-gray-500"></div>
 
-        <div class="flex flex-grow min-h-full w-11/12 mx-auto mt-5 flex-col justify-start place-content-start">
+        <div class="flex flex-grow w-11/12 mx-auto mt-5 flex-col justify-start place-content-start">
             <!-- Thread's wrapper -->
             <article class="py-4 lg:py-8">
                 <div class="max-w-2xl mx-auto px-4">
@@ -413,7 +433,7 @@
                         <div id="threadTitle" class="text-pink-200 text-2xl font-bold p-2 ml-4">
                             <!-- Thread's title -->
                         </div>
-                        <div id="threadId" class="text-gray-300 text-2xl font-bold p-2 ml-4">
+                        <div id="threadId" class="text-white text-2xl font-bold p-2">
                             <!-- Thread's id -->
                         </div>
                     </div>
@@ -434,17 +454,23 @@
                             </div>
                         </div>
 
-                        <!-- Button for interaction -->
+                        <!-- Interaction Button  -->
                         <div class="flex flex-grow min-h-full items-center">
-                            <div class="flex text-white text-2xl ml-auto mr-5 gap-5">
+                            <div class="flex text-white text-2xl ml-auto mr-5 gap-3">
+                                <div class="flex items-center">
+                                    <div id="threadLikes" class="text-xs text-center"></div>
+                                </div>
                                 <!-- Like thread button -->
-                                <button id="like">
+                                <button class="" id="like">
                                     <i class="fa-solid fa-thumbs-up"></i>
                                 </button>
                                 <!-- Favourite thread button-->
-                                <button id="fav">
+                                <button class="" id="watch">
                                     <i class="fa-solid fa-heart-circle-plus"></i>
                                 </button>
+                                <div>
+                                    <i id="threadLock" class="fa-solid"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -454,12 +480,13 @@
                             <!-- Thread's Content placerholder -->
                         </p>
                     </div>
-                    <div>
-                        <button class="text-red-300 mt-3 ml-4" id="deleteThread">
+                    <!-- Action Box -->
+                    <div class="actionBox hidden">
+                        <button class="text-red-300 mt-3 ml-4" id="deleteThreadButton">
                             Delete
                         </button>
-                        <button class="text-red-300 mt-3 ml-4" id="editThread">
-                            Edit post
+                        <button class="text-red-300 mt-3 ml-4" id="editThreadButton">
+                            Edit thread
                         </button>
                     </div>
                 </div>
@@ -506,7 +533,9 @@
                 <div class="flex items-center">
                     <p class="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white font-semibold">
                         <img class="mr-2 w-6 h-6 rounded-full" src="" alt="">
-                        <span class="commentAuthor"></span>
+                        <span class="commentAuthor">
+                            <!-- Comment's author -->
+                        </span>
                     </p>
                     <p class="text-sm text-gray-600 dark:text-gray-400">
                         <time pubdate datetime="" title="" class="commentTime"></time>
