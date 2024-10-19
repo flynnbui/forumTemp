@@ -98,7 +98,7 @@ export function get(url, query = null, token = null) {
 
 export function put(url, body = null, token = null) {
   if (body !== null && typeof body === 'string') {
-      return Promise.reject(new Error("Not allow type of body is string"));
+    return Promise.reject(new Error("Not allow type of body is string"));
   }
   const headers = {
     'Content-Type': 'application/json',
@@ -111,20 +111,21 @@ export function put(url, body = null, token = null) {
   }
 
   const options = {
-      method: 'PUT',
-      headers: headers,
-      body: body ? JSON.stringify(body) : null
+    method: 'PUT',
+    headers: headers,
+    body: body ? JSON.stringify(body) : null
   }
 
   return fetch(url, options)
-      .then(response => {
-          if (!response.ok) {
-              throw new Error(response.error);
-          }
-          return response.json();
-      });
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(response.error);
+      }
+      return response.json();
+    })
+    .catch(error => { throw error });
 }
-export function deleteRequest (url, body = null, token = null) {
+export function deleteRequest(url, body = null, token = null) {
   const headers = {
     'Content-Type': 'application/json',
   };
@@ -193,7 +194,7 @@ export function formatDate(dateString) {
   const day = String(date.getDate()).padStart(2, '0');
   const month = months[date.getMonth()];
   const year = date.getFullYear();
-  
+
   return `${day} ${month} ${year}`;
 }
 

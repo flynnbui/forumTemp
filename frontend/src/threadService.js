@@ -35,13 +35,8 @@ export function setupNewThread() {
             postButton.disabled = true;
             newThread(threadTitle, threadVisibility, threadContent)
                 .then(threadId => {
-                    return getThread(threadId);
-                })
-                .then(threadDetails => {
-                    return getProfile(threadDetails.creatorId)
-                        .then(authorDetails => {
-                            setupThreadDetail(threadDetails, authorDetails);
-                        });
+                    fetchThread(threadId)
+                        .then(response => { setupThreadDetail(response.threadDetails, response.authorDetails) })
                 })
                 .catch(error => {
                     console.error(error);
@@ -56,10 +51,37 @@ export function setupNewThread() {
     });
 }
 
-function setupEditThread(threadId) {
+function fetchThread(threadId) {
+    return getThread(threadId)
+        .then(threadDetails => {
+            return getProfile(threadDetails.creatorId)
+                .then(authorDetails => {
+                    return { threadDetails, authorDetails };
+                });
+        })
+}
+
+function setupEditThread(thread) {
     clearThreadContainer();
+    console.log(thread);
     const template = document.getElementById("editThread");
     const clone = template.content.cloneNode(true);
+
+    // Pre-populated fields based on the current thread data
+    clone.querySelector("#editTitle").value = thread.title;
+    clone.querySelector("#editContent").value = thread.content;
+    const visibility = clone.querySelectorAll('input[name="editVisibility"]');
+    visibility.forEach(radio => {
+        if (radio.value === String(thread.isPublic)) {
+            radio.checked = true;
+        }
+    });
+    const status = clone.querySelectorAll('input[name="editStatus"]')
+    status.forEach(radio => {
+        if (radio.value === String(thread.lock)) {
+            radio.checked = true;
+        }
+    });
 
     const threadContainer = document.getElementById("threadContainer");
     threadContainer.appendChild(clone);
@@ -81,28 +103,26 @@ function setupEditThread(threadId) {
         let threadVisibility;
         radios.forEach(radio => {
             if (radio.checked) {
-                threadVisibility = radio.value === "true";
+                threadVisibility = (radio.value === "true");
             }
         });
 
         let threadStatus;
         status.forEach(radio => {
             if (radio.checked) {
-                threadVisibility = radio.value === "true";
+                threadStatus = (radio.value === "true");
             }
         });
 
         if (threadTitle) {
             saveButton.disabled = true;
-            editThread(threadId, threadTitle, threadVisibility, threadStatus, threadContent)
-                .then(id => {
-                    return getThread(threadId);
-                })
-                .then(threadDetails => {
-                    return getProfile(threadDetails.creatorId)
-                        .then(authorDetails => {
-                            setupThreadDetail(threadDetails, authorDetails);
-                        });
+            editThread(thread.id, threadTitle, threadVisibility, threadStatus, threadContent)
+                .then(() => {
+                    fetchThread(thread.id)
+                        .then(response => { setupThreadDetail(response.threadDetails, response.authorDetails) })
+                        .catch(error => {
+                            console.error(error);
+                        })
                 })
                 .catch(error => {
                     console.error(error);
@@ -145,8 +165,13 @@ function setupThreadDetail(thread, author) {
         const deleteButton = document.querySelector("#deleteThreadButton")
         //event listener for thread's interaction
         editButton.addEventListener("click", () => {
-            console.log("edit's working")
-            setupEditThread(thread.id);
+            if (thread.lock) {
+                showErrorMessage(`This thread ${thread.id} is locked`, "showThreadError")
+                return;
+            }
+            else {
+                setupEditThread(thread);
+            }
         })
 
         deleteButton.addEventListener("click", () => {
@@ -164,25 +189,33 @@ function setupThreadDetail(thread, author) {
             const parsedLikes = JSON.parse(thread.likes);
             likes = Array.isArray(parsedLikes) ? parsedLikes : [parsedLikes];
         } catch (error) {
-            console.error("Failed to parse 'likes':", error);
+            console.error(error);
             likes = [];
         }
     }
     let liked = likes.includes(userKey);
     const likeButton = document.querySelector("#like");
-    toggleLike(liked);
+    updateLikeButton(liked);
 
     likeButton.addEventListener("click", () => {
-        const newLikedState = !liked;
-        liked = newLikedState;
-        toggleLike(liked);
+        if (thread.lock) {
+            showErrorMessage(`This thread ${thread.id} is locked`, "showThreadError")
+            return;
+        }
+        else {
+            const newLikedState = !liked;
+            liked = newLikedState;
+            updateLikeButton(liked);
+            updateLikeNumber(thread, liked);
 
-        likeThread(thread.id, liked)
-            .catch(error => {
-                console.error("Error updating like status:", error);
-                liked = !newLikedState;
-                toggleLike(liked);
-            });
+            likeThread(thread.id, liked)
+                .catch(error => {
+                    console.error(error);
+                    liked = !newLikedState;
+                    updateLikeButton(liked);
+                    updateLikeNumber(thread, liked);
+                });
+        }
     });
 
 
@@ -192,26 +225,42 @@ function setupThreadDetail(thread, author) {
             const parsedWatchees = JSON.parse(thread.watchees);
             watchees = Array.isArray(parsedWatchees) ? parsedWatchees : [parsedWatchees];
         } catch (error) {
-            console.error("Failed to parse 'watchees':", error);
+            console.error(error);
             watchees = [];
         }
     }
     let watched = watchees.includes(userKey);
     const watchButton = document.querySelector("#watch");
-    toggleWatch(watched);
+    updateWatchButton(watched);
     watchButton.addEventListener("click", () => {
         const newWatchedState = !watched;
         watched = newWatchedState;
-        toggleWatch(watched);
+        updateWatchButton(watched);
 
         watchThread(thread.id, watched)
             .catch(error => {
                 console.error("Error updating watch status:", error);
                 watched = !newWatchedState;
-                toggleWatch(watched);
+                updateWatchButton(watched);
             });
     });
 }
+
+function updateLikeNumber(thread, liked) {
+    let likeCount = parseInt(document.querySelector("#threadLikes").textContent); // Get current like count as a number
+    liked ? likeCount += 1 : likeCount -= 1;
+    document.querySelector("#threadLikes").textContent = likeCount;
+
+    const threadListItem = document.getElementById(thread.id);
+    const threadTimeText = threadListItem.querySelector(`.threadTime`).textContent;
+    
+    const [datePart] = threadTimeText.split('|').map(part => part.trim());
+
+    const newLikesText = likeCount === 1 ? `${likeCount} like` : `${likeCount} likes`;
+
+    threadListItem.querySelector(`.threadTime`).textContent = `${datePart} | ${newLikesText}`;
+}
+
 
 function newThread(title, isPublic, content) {
     return post(API + "/thread", { title, isPublic, content }, localStorage.getItem(TOKEN_KEY))
@@ -277,7 +326,9 @@ function deleteThread(id) {
                 removeOwnedThread(id);
                 removeFromThreadList(id);
                 clearThreadContainer();
-                return id;
+                const latestThread = document.querySelector(".threadItem");
+                fetchThread(latestThread.id)
+                    .then(response => { setupThreadDetail(response.threadDetails, response.authorDetails) })
             } else {
                 throw new Error(response.error);
             }
@@ -322,7 +373,7 @@ function toggleActionBox(threadId, userId) {
     });
 }
 
-function toggleLike(turnon) {
+function updateLikeButton(turnon) {
     const likeButton = document.querySelector("#like");
     if (turnon) {
         likeButton.classList.add("text-red-500");
@@ -331,7 +382,7 @@ function toggleLike(turnon) {
     }
 }
 
-function toggleWatch(turnon) {
+function updateWatchButton(turnon) {
     const watchButton = document.querySelector("#watch");
     if (turnon) {
         watchButton.classList.add("text-red-500");
@@ -379,18 +430,8 @@ export function getThread(id) {
 }
 
 export function populateThreadList(id, newThread = null) {
-    getThread(id)
-        .then(thread => {
-            if (!thread) {
-                return Promise.reject('Failed to retrieve thread');
-            }
-            return getProfile(thread.creatorId).then(author => {
-                if (!author) {
-                    return Promise.reject(thread.error);
-                }
-                createThreadListItem(thread, author, newThread);
-            });
-        })
+    fetchThread(id)
+        .then(response => createThreadListItem(response.threadDetails, response.authorDetails, newThread))
         .catch(error => {
             console.error('Error displaying thread:', error);
         });
@@ -412,15 +453,9 @@ function createThreadListItem(thread, author, newThread) {
 
     //Handle view thread event
     threadItem.addEventListener('click', () => {
-        getThread(threadItem.id)
-            .then(thread => {
-                return thread;
-            })
-            .then(threadDetails => {
-                return getProfile(threadDetails.creatorId)
-                    .then(authorDetails => {
-                        setupThreadDetail(threadDetails, authorDetails);
-                    })
+        fetchThread(thread.id)
+            .then(response => {
+                setupThreadDetail(response.threadDetails, response.authorDetails);
             })
             .catch(error => {
                 console.error(error);

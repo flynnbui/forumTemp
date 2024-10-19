@@ -9,7 +9,7 @@ let start = 0;
 function isSession() {
     if (localStorage.getItem(TOKEN_KEY)) {
         showPage("forumPage");
-        //   getThreadList();
+        getThreadList();
     }
     else {
         showPage("loginPage");

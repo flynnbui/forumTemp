@@ -254,7 +254,7 @@
 
     <!-- Thread List Item Template -->
     <template id="threadListItemTemplate">
-        <button class="block h-24 w-full bg-gray-800 p-4 hover:bg-gray-700 threadItem text-left">
+        <button class="threadItem block h-24 w-full bg-gray-800 p-4 hover:bg-gray-700 text-left">
             <div class="flex flex-col justify-between h-full overflow-hidden">
                 <div class="overflow-hidden">
                     <h3 class="text-pink-200 text-sm font-semibold truncate threadTitle"></h3>
@@ -360,7 +360,7 @@
         <div class="flex flex-col w-full max-w-2xl mx-auto mt-5 px-4">
             <form class="space-y-6" id="newThreadForm">
                 <!-- Error box -->
-                <div class="editThreadError"></div>
+                <div id="editThreadError"></div>
                 <!-- Title input -->
                 <div class="grid grid-cols-1 sm:grid-cols-4 gap-2 items-center">
                     <label for="editTitle" class="text-lg sm:text-xl text-white">Title</label>
@@ -381,11 +381,11 @@
                     <span class="text-lg sm:text-xl text-white">Visibility:</span>
                     <div class="col-span-1 sm:col-span-3 flex space-x-6">
                         <label class="inline-flex items-center">
-                            <input type="radio" name="editVisibility" value="public" class="text-indigo-500" checked />
+                            <input type="radio" name="editVisibility" value="true" class="text-indigo-500" checked />
                             <span class="ml-2 text-white text-sm">Public</span>
                         </label>
                         <label class="inline-flex items-center">
-                            <input type="radio" name="editVisibility" value="private" class="text-indigo-500" />
+                            <input type="radio" name="editVisibility" value="false" class="text-indigo-500" />
                             <span class="ml-2 text-white text-sm">Private</span>
                         </label>
                     </div>
@@ -396,13 +396,14 @@
                     <span class="text-lg sm:text-xl text-white">Status:</span>
                     <div class="col-span-1 sm:col-span-3 flex space-x-6">
                         <label class="inline-flex items-center">
-                            <input type="radio" name="editStatus" value="true" class="text-indigo-500" checked />
-                            <span class="ml-2 text-white text-sm">Lock</span>
-                        </label>
-                        <label class="inline-flex items-center">
                             <input type="radio" name="editStatus" value="false" class="text-indigo-500" />
                             <span class="ml-2 text-white text-sm">Open</span>
                         </label>
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="editStatus" value="true" class="text-indigo-500" checked />
+                            <span class="ml-2 text-white text-sm">Lock</span>
+                        </label>
+
                     </div>
                 </div>
             </form>
@@ -426,6 +427,8 @@
         <div class="w-full h-px bg-gray-500"></div>
 
         <div class="flex flex-grow w-11/12 mx-auto mt-5 flex-col justify-start place-content-start">
+            <!-- Error box -->
+            <div id="showThreadError" class="w-full"></div>
             <!-- Thread's wrapper -->
             <article class="py-4 lg:py-8">
                 <div class="max-w-2xl mx-auto px-4">
