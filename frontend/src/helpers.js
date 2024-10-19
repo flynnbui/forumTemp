@@ -48,13 +48,10 @@ export function post(url, body = null, token = null) {
 
   return fetch(url, requestOptions)
     .then((response) => {
-      return response.json();
-    })
-    .then((data) => {
-      if (data.error) {
-        throw new Error(data.error);
+      if (!response.ok) {
+        throw new Error(response.error);
       }
-      return data;
+      return response.json();
     })
     .catch(error => {
       throw error;
@@ -86,10 +83,10 @@ export function get(url, query = null, token = null) {
 
   return fetch(requestURL, requestOptions)
     .then(response => {
+      if (!response.ok) {
+        throw new Error(response.error);
+      }
       return response.json();
-    })
-    .then(data => {
-      return data;
     })
     .catch(error => {
       throw error;
@@ -142,13 +139,10 @@ export function deleteRequest(url, body = null, token = null) {
 
   return fetch(url, requestOptions)
     .then((response) => {
-      return response.json();
-    })
-    .then((data) => {
-      if (data.error) {
-        throw new Error(data.error);
+      if (!response.ok) {
+        throw new Error(response.error);
       }
-      return data;
+      return response.json();
     })
     .catch(error => {
       throw error;

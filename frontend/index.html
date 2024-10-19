@@ -160,31 +160,31 @@
                 </div>
                 <div class="h-4/6 flex-col justify-center content-center w-16">
                     <div class="text-center w-16 h-16 text-white">
-                        <button class="home text-center w-16 h-16 text-white dark:md:hover:bg-sky-900 aria-label=" Home"
+                        <button class="home text-center w-16 h-16 text-white md:hover:bg-sky-900 aria-label=" Home"
                             title="Home">
                             <i class="fa-solid fa-house"></i>
                         </button>
                     </div>
                     <div class="text-center w-16 h-16 text-white">
-                        <button id="favorites" class="text-center w-16 h-16 text-white dark:md:hover:bg-sky-900"
+                        <button id="favorites" class="text-center w-16 h-16 text-white md:hover:bg-sky-900"
                             aria-label="Favorites" title="Favorites">
                             <i class="fa-solid fa-heart"></i>
                         </button>
                     </div>
                     <div class="text-center w-16 h-16 text-white">
-                        <button class="add text-center w-16 h-16 text-white dark:md:hover:bg-sky-900"
+                        <button class="add text-center w-16 h-16 text-white md:hover:bg-sky-900"
                             aria-label="Add new thread" title="Add new thread">
                             <i class="fa-solid fa-square-plus"></i>
                         </button>
                     </div>
                     <div class="text-center w-16 h-16 text-white">
-                        <button id="profile" class="text-center w-16 h-16 text-white dark:md:hover:bg-sky-900"
+                        <button id="profile" class="text-center w-16 h-16 text-white md:hover:bg-sky-900"
                             aria-label="Profile" title="Profile">
                             <i class="fa-solid fa-user"></i>
                         </button>
                     </div>
                     <div class="text-center w-16 h-16 text-white">
-                        <button id="logout" class="text-center w-16 h-16 text-white dark:md:hover:bg-sky-900"
+                        <button id="logout" class="text-center w-16 h-16 text-white md:hover:bg-sky-900"
                             aria-label="Logout" title="Logout">
                             <i class="fa-solid fa-arrow-right-from-bracket"></i>
                         </button>
@@ -242,12 +242,9 @@
                 <!-- Message will be inserted here -->
             </span>
             <span class="absolute top-0 bottom-0 right-0 px-4 py-3 close-button-container">
-                <svg class="fill-current h-4 w-4 text-red-500 warningButton" role="button"
-                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                    <title>Close</title>
-                    <path
-                        d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
-                </svg>
+                <div class="fill-current h-4 w-4 text-red-500 warningButton">
+                    <i class="fa-solid fa-xmark"></i>
+                </div>
             </span>
         </div>
     </template>
@@ -300,17 +297,18 @@
                 <div id="newThreadError"></div>
                 <!-- Title input -->
                 <div class="grid grid-cols-1 sm:grid-cols-4 gap-2 items-center">
-                    <label for="newTitle" class="text-lg sm:text-xl text-white">Title</label>
-                    <input id="newTitle" name="newTitle" type="text" required
-                        class="col-span-1 sm:col-span-3 w-full rounded-md border-0 py-1.5 text-white bg-gray-700 shadow-sm ring-1 ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-500 sm:text-sm sm:leading-6" />
+                    <label for="editTitle" class="text-lg sm:text-xl text-white">Title</label>
+                    <input id="editTitle" name="editTitle" type="text" required
+                        class="col-span-1 sm:col-span-3 w-full rounded-md border-0 py-1.5 text-white bg-gray-700 shadow-sm ring-1 ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                        placeholder="Write your thread title..." />
                 </div>
 
                 <!-- Content input -->
                 <div class="grid grid-cols-1 sm:grid-cols-4 gap-2 items-start">
-                    <label for="newContent" class="text-lg sm:text-xl text-white pt-1.5">Content</label>
-                    <textarea id="newContent" name="newContent" rows="6"
-                        class="col-span-1 sm:col-span-3 w-full rounded-md border-0 py-1.5 text-white bg-gray-700 shadow-sm ring-1 ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-500 sm:text-sm sm:leading-6 resize-none"
-                        style="min-height: 150px;"></textarea>
+                    <label for="editContent" class="text-lg sm:text-xl text-white pt-1.5">Content</label>
+                    <textarea id="editContent" name="content" rows="6"
+                        class="col-span-1 sm:col-span-3 w-full rounded-md border-0 py-1.5 text-white bg-gray-800 shadow-sm ring-1 ring-gray-700 placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-500 sm:text-sm sm:leading-6 resize-none"
+                        style="min-height: 150px;" placeholder="Write your thread content..."></textarea>
                 </div>
 
                 <!-- Visibility Radio Buttons -->
@@ -372,8 +370,8 @@
                 <div class="grid grid-cols-1 sm:grid-cols-4 gap-2 items-start">
                     <label for="editContent" class="text-lg sm:text-xl text-white pt-1.5">Content</label>
                     <textarea id="editContent" name="content" rows="6"
-                        class="col-span-1 sm:col-span-3 w-full rounded-md border-0 py-1.5 text-white bg-gray-700 shadow-sm ring-1 ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-500 sm:text-sm sm:leading-6 resize-none"
-                        style="min-height: 150px;"></textarea>
+                        class="col-span-1 sm:col-span-3 w-full rounded-md border-0 py-1.5 text-white bg-gray-800 shadow-sm ring-1 ring-gray-700 placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-500 sm:text-sm sm:leading-6 resize-none"
+                        style="min-height: 150px;" placeholder="Edit your thread content..."></textarea>
                 </div>
 
                 <!-- Visibility Radio Buttons -->
@@ -410,13 +408,12 @@
         </div>
     </template>
 
-    <!-- Show Thread -->
     <template id="showThread">
         <!-- Thread's Header -->
         <div class="flex w-full h-12 overflow-hidden">
             <div class="flex items-center justify-center w-full h-12">
                 <div class="flex w-full text-white text-2xl overflow-hidden">
-                    <div class=" ml-3 w-full">
+                    <div class="ml-3 w-full">
                         Thread
                     </div>
                 </div>
@@ -426,12 +423,16 @@
         <!-- Horizontal Divider -->
         <div class="w-full h-px bg-gray-500"></div>
 
-        <div class="flex flex-grow w-11/12 mx-auto mt-5 flex-col justify-start place-content-start">
+        <!-- Main Content Area -->
+        <div class="grid grid-rows-[auto_1fr] overflow-hidden w-11/12 mx-auto mt-5"
+            style="height: calc(100vh - 3rem - 1px - 1.25rem);">
             <!-- Error box -->
             <div id="showThreadError" class="w-full"></div>
-            <!-- Thread's wrapper -->
-            <article class="py-4 lg:py-8">
+
+            <!-- Thread's Wrapper -->
+            <article class="mb-4">
                 <div class="max-w-2xl mx-auto px-4">
+                    <!-- Thread Title and ID -->
                     <div class="flex w-full">
                         <div id="threadTitle" class="text-pink-200 text-2xl font-bold p-2 ml-4">
                             <!-- Thread's title -->
@@ -441,10 +442,10 @@
                         </div>
                     </div>
 
-                    <!-- Thread's body-->
+                    <!-- Thread's Body -->
                     <div class="flex w-full h-20 items-center">
                         <div>
-                            <!-- Author's avatar -->
+                            <!-- Author's Avatar -->
                             <img id="authorAvatar" src=""
                                 class="ml-4 w-12 h-12 flex items-center justify-center border-2 border-gray-700 rounded-full bg-gray-600">
                         </div>
@@ -457,18 +458,18 @@
                             </div>
                         </div>
 
-                        <!-- Interaction Button  -->
+                        <!-- Interaction Buttons -->
                         <div class="flex flex-grow min-h-full items-center">
                             <div class="flex text-white text-2xl ml-auto mr-5 gap-3">
                                 <div class="flex items-center">
                                     <div id="threadLikes" class="text-xs text-center"></div>
                                 </div>
-                                <!-- Like thread button -->
-                                <button class="" id="like">
+                                <!-- Like Thread Button -->
+                                <button id="like">
                                     <i class="fa-solid fa-thumbs-up"></i>
                                 </button>
-                                <!-- Favourite thread button-->
-                                <button class="" id="watch">
+                                <!-- Favourite Thread Button -->
+                                <button id="watch">
                                     <i class="fa-solid fa-heart-circle-plus"></i>
                                 </button>
                                 <div>
@@ -478,11 +479,13 @@
                         </div>
                     </div>
 
+                    <!-- Thread Content -->
                     <div class="flex min-h-full mx-auto mt-3 ml-4">
                         <p id="threadContent" class="text-white">
-                            <!-- Thread's Content placerholder -->
+                            <!-- Thread's Content placeholder -->
                         </p>
                     </div>
+
                     <!-- Action Box -->
                     <div class="actionBox hidden">
                         <button class="text-red-300 mt-3 ml-4" id="deleteThreadButton">
@@ -492,172 +495,148 @@
                             Edit thread
                         </button>
                     </div>
+                    <div class="dark:text-white text-lg lg:text-2xl font-bold text-gray-900 p-4">
+                        Discussion
+                    </div>
                 </div>
             </article>
 
             <!-- Discussion Box -->
-            <div class="py-8 lg:py-16" id="discussionBox">
-                <div class="max-w-2xl mx-auto px-4">
+            <div class="grid grid-rows-[auto_1fr_auto] max-w-2xl w-full mx-auto px-4 overflow-hidden"
+                id="discussionBox">
+                <!-- Comment Section -->
+                <section id="commentBox" class="overflow-y-auto mb-4">
+                    <!-- Comments will be inserted here -->
+                </section>
 
-                    <!-- Discussion Form -->
-                    <section id="discussionForm">
-                        <div class="flex justify-between items-center mb-6">
-                            <h2 class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-white">
-                                Discussion</h2>
+                <!-- Discussion Form (Fixed at bottom) -->
+                <section id="discussionForm">
+                    <form class="mb-6">
+                        <div
+                            class="py-2 px-4 mb-4  rounded-lg rounded-t-lg border border-gray-200 bg-gray-900 border-gray-700">
+                            <label for="comment" class="sr-only">Your comment</label>
+                            <textarea id="comment" rows="3"
+                                class="px-0 w-full text-sm text-white border-0 focus:ring-0 focus:outline-none  placeholder-gray-400 bg-gray-900"
+                                placeholder="Write a comment..." required></textarea>
                         </div>
-                        <form class="mb-6">
-                            <div
-                                class="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
-                                <label for="comment" class="sr-only">Your comment</label>
-                                <textarea id="comment" rows="6"
-                                    class="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-800"
-                                    placeholder="Write a comment..." required></textarea>
-                            </div>
-                            <button type="submit"
-                                class="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
-                                Post comment
-                            </button>
-                        </form>
-                    </section>
-
-                    <!-- Comment section -->
-                    <section id="commentBox">
-                        <!-- Comments will be inserted here -->
-                    </section>
-                </div>
+                        <button type="submit"
+                            class="postButton inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white">
+                            Post comment
+                        </button>
+                    </form>
+                </section>
             </div>
+        </div>
     </template>
 
     <!--Template for comment-->
     <!-- Main Comment Template -->
     <template id="mainComment">
-        <article class="p-6 text-base bg-white rounded-lg dark:bg-gray-900">
-            <footer class="flex justify-between items-center mb-2">
+        <article class="mainComment p-6 text-base rounded-lg bg-gray-900">
+            <div class="flex justify-between items-center mb-2">
                 <div class="flex items-center">
-                    <p class="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white font-semibold">
+                    <p class="inline-flex items-center mr-3 text-sm text-gray-900 text-white font-semibold">
                         <img class="mr-2 w-6 h-6 rounded-full" src="" alt="">
-                        <span class="commentAuthor">
-                            <!-- Comment's author -->
-                        </span>
+                    <div class="text-white commentAuthor">
+                        <!-- Comment's author -->
+                    </div>
                     </p>
-                    <p class="text-sm text-gray-600 dark:text-gray-400">
-                        <time pubdate datetime="" title="" class="commentTime"></time>
+                    <p class="ml-4 text-sm text-gray-400 commentTime">
                     </p>
                 </div>
-                <button
-                    class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-500 dark:text-gray-400 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50 dark:bg-gray-900 dark:hover:bg-gray-700 dark:focus:ring-gray-600 commentSettingsButton"
-                    type="button">
-                    <!-- SVG icon -->
-                    <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                        viewBox="0 0 16 3">
-                        <path
-                            d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z" />
-                    </svg>
-                    <span class="srOnly">Comment settings</span>
-                </button>
-                <!-- Dropdown menu -->
-                <div
-                    class="hidden z-10 w-36 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 commentDropdownMenu">
-                    <ul class="py-1 text-sm text-gray-700 dark:text-gray-200">
-                        <li>
-                            <a href="#"
-                                class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Edit</a>
-                        </li>
-                        <li>
-                            <a href="#"
-                                class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Remove</a>
-                        </li>
-                        <li>
-                            <a href="#"
-                                class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Report</a>
-                        </li>
-                    </ul>
-                </div>
-            </footer>
-            <p class="text-gray-500 dark:text-gray-400 commentContent">
+            </div>
+            <p class="text-gray-300 commentContent">
                 <!-- Comment content will be inserted here -->
             </p>
             <div class="flex items-center mt-4 space-x-4">
                 <button type="button"
-                    class="flex items-center text-sm text-gray-500 hover:underline dark:text-gray-400 font-medium replyButton">
-                    <!-- SVG icon -->
-                    <svg class="mr-1.5 w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                        viewBox="0 0 20 18">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M5 5h5M5 8h2m6-3h2m-5 3h6m2-7H2a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h3v5l5-5h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1Z" />
-                    </svg>
+                    class="flex items-center text-sm text-red-300 hover:underline font-medium likeButton">
+                    Like
+                </button>
+                <button type="button"
+                    class="flex items-center text-sm text-red-300 hover:underline font-medium replyButton">
                     Reply
                 </button>
+                <button type="button"
+                    class="flex items-center text-sm text-red-300 hover:underline font-medium editButton">
+                    Edit
+                </button>
             </div>
+
+            <!-- Sub-comment box main comment -->
+            <section class="subCommentBox mb-6">
+                <!-- Sub comments will be inserted here -->
+            </section>
         </article>
-        <section id="subCommentBox">
-            <!-- Sub comment will be inserted here -->
-        </section>
     </template>
 
 
+
     <!-- Sub-Comment Template -->
-    <template id="subComment">
-        <article class="p-6 mb-3 ml-6 lg:ml-12 text-base bg-white rounded-lg dark:bg-gray-900">
-            <footer class="flex justify-between items-center mb-2">
+    <template id="subComment"> 
+        <article class="subComment my-5 ml-6 lg:ml-12 text-base rounded-lg bg-gray-900" id="">
+            <div class="flex justify-between items-center mb-2">
                 <div class="flex items-center">
-                    <p class="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white font-semibold">
+                    <p class="inline-flex items-center mr-3 text-sm text-gray-900 text-white font-semibold">
                         <img class="mr-2 w-6 h-6 rounded-full" src="" alt="">
-                        <span class="commentAuthor"></span>
+                    <div class="text-white subCommentAuthor">
+                        <!-- Comment's author -->
+                    </div>
                     </p>
-                    <p class="text-sm text-gray-600 dark:text-gray-400">
-                        <time pubdate datetime="" title="" class="commentTime"></time>
+                    <p class="ml-4 subCommentTime text-sm text-gray-400">
                     </p>
                 </div>
-                <button
-                    class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-500 dark:text-gray-400 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50 dark:bg-gray-900 dark:hover:bg-gray-700 dark:focus:ring-gray-600 commentSettingsButton"
-                    type="button">
-                    <!-- SVG icon -->
-                    <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                        viewBox="0 0 16 3">
-                        <path
-                            d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z" />
-                    </svg>
-                    <span class="srOnly">Comment settings</span>
-                </button>
-                <!-- Dropdown menu -->
-                <div
-                    class="hidden z-10 w-36 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 commentDropdownMenu">
-                    <ul class="py-1 text-sm text-gray-700 dark:text-gray-200">
-                        <li>
-                            <a href="#"
-                                class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Edit</a>
-                        </li>
-                        <li>
-                            <a href="#"
-                                class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Remove</a>
-                        </li>
-                        <li>
-                            <a href="#"
-                                class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Report</a>
-                        </li>
-                    </ul>
-                </div>
-            </footer>
-            <p class="text-gray-500 dark:text-gray-400 commentContent">
+            </div>
+            <p class="text-gray-300 subCommentContent">
                 <!-- Sub-comment content will be inserted here -->
             </p>
             <div class="flex items-center mt-4 space-x-4">
                 <button type="button"
-                    class="flex items-center text-sm text-gray-500 hover:underline dark:text-gray-400 font-medium replyButton">
-                    <!-- SVG icon -->
-                    <svg class="mr-1.5 w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                        viewBox="0 0 20 18">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M5 5h5M5 8h2m6-3h2m-5 3h6m2-7H2a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h3v5l5-5h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1Z" />
-                    </svg>
+                    class="flex items-center text-sm text-red-300 hover:underline font-medium likeButton">
+                    Like
+                </button>
+                <button type="button"
+                    class="flex items-center text-sm text-red-300 hover:underline font-medium replyButton">
                     Reply
                 </button>
+                <button type="button"
+                    class="flex items-center text-sm text-red-300 hover:underline font-medium editButton">
+                    Edit
+                </button>
             </div>
+            <section class="subCommentBox mb-6">
+                <!-- Sub comments will be inserted here -->
+            </section>
         </article>
     </template>
 
-
+    <div id="editCommentModal" tabindex="-1" aria-hidden="true" class="hidden fixed inset-0 z-50 overflow-y-auto overflow-x-hidden flex items-center justify-center">
+        <div class="relative p-4 w-full max-w-md">
+          <!-- Modal content -->
+          <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <!-- Modal header -->
+            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Edit Comment</h3>
+              <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="edit-comment-modal">
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1l6 6m0 0l6 6M7 7l6-6M7 7L1 13"/>
+                </svg>
+                <span class="sr-only">Close modal</span>
+              </button>
+            </div>
+            <!-- Modal body -->
+            <form id="editCommentForm" class="p-4 md:p-5">
+              <div class="mb-4">
+                <label for="commentContent" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your Comment</label>
+                <textarea id="commentContent" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-600 focus:border-primary-600 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="Edit your comment here..."></textarea>
+              </div>
+              <button type="submit" class="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                Save Changes
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
     <script type="module" src="src/main.js"></script>
 </body>
 

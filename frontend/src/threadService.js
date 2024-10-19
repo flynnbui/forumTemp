@@ -1,7 +1,7 @@
-import { API } from './config.js';
-import { TOKEN_KEY, USER_KEY, THREAD_KEY } from './config.js';
+import { API, TOKEN_KEY, USER_KEY, THREAD_KEY } from './config.js';
 import { post, get, put, deleteRequest, showErrorMessage, formatDate } from './helpers.js';
 import { getProfile } from './userService.js';
+import { setupComment } from './commentService.js';
 
 
 export function setupNewThread() {
@@ -160,65 +160,15 @@ function setupThreadDetail(thread, author) {
     const threadContainer = document.getElementById("threadContainer");
     threadContainer.appendChild(clone);
 
-    if (toggleActionBox(thread.id, localStorage.getItem(USER_KEY))) {
-        const editButton = document.querySelector("#editThreadButton");
-        const deleteButton = document.querySelector("#deleteThreadButton")
-        //event listener for thread's interaction
-        editButton.addEventListener("click", () => {
-            if (thread.lock) {
-                showErrorMessage(`This thread ${thread.id} is locked`, "showThreadError")
-                return;
-            }
-            else {
-                setupEditThread(thread);
-            }
-        })
-
-        deleteButton.addEventListener("click", () => {
-            deleteThread(thread.id)
-                .catch(error => {
-                    console.error(error);
-                });
-        });
-    }
+    setupComment(thread);
+    setupThreadAction(thread);
     let userKey = Number(localStorage.getItem(USER_KEY));
+    handleLikeButton(thread, userKey);
+    handleWatchButton(thread, userKey);
+    
+}
 
-    let likes = [];
-    if (thread.likes && thread.likes.length > 0) {
-        try {
-            const parsedLikes = JSON.parse(thread.likes);
-            likes = Array.isArray(parsedLikes) ? parsedLikes : [parsedLikes];
-        } catch (error) {
-            console.error(error);
-            likes = [];
-        }
-    }
-    let liked = likes.includes(userKey);
-    const likeButton = document.querySelector("#like");
-    updateLikeButton(liked);
-
-    likeButton.addEventListener("click", () => {
-        if (thread.lock) {
-            showErrorMessage(`This thread ${thread.id} is locked`, "showThreadError")
-            return;
-        }
-        else {
-            const newLikedState = !liked;
-            liked = newLikedState;
-            updateLikeButton(liked);
-            updateLikeNumber(thread, liked);
-
-            likeThread(thread.id, liked)
-                .catch(error => {
-                    console.error(error);
-                    liked = !newLikedState;
-                    updateLikeButton(liked);
-                    updateLikeNumber(thread, liked);
-                });
-        }
-    });
-
-
+function handleWatchButton(thread, userKey) {
     let watchees = [];
     if (thread.watchees && thread.watchees.length > 0) {
         try {
@@ -246,6 +196,67 @@ function setupThreadDetail(thread, author) {
     });
 }
 
+function handleLikeButton(thread, userKey) {
+    let likes = [];
+    if (thread.likes && thread.likes.length > 0) {
+        try {
+            const parsedLikes = JSON.parse(thread.likes);
+            likes = Array.isArray(parsedLikes) ? parsedLikes : [parsedLikes];
+        } catch (error) {
+            console.error(error);
+            likes = [];
+        }
+    }
+    let liked = likes.includes(userKey);
+    const likeButton = document.querySelector("#like");
+    updateLikeButton(liked);
+
+    likeButton.addEventListener("click", () => {
+        if (thread.lock) {
+            showErrorMessage(`This thread ${thread.id} is locked`, "showThreadError");
+            return;
+        }
+        else {
+            const newLikedState = !liked;
+            liked = newLikedState;
+            updateLikeButton(liked);
+            updateLikeNumber(thread, liked);
+
+            likeThread(thread.id, liked)
+                .catch(error => {
+                    console.error(error);
+                    liked = !newLikedState;
+                    updateLikeButton(liked);
+                    updateLikeNumber(thread, liked);
+                });
+        }
+    });
+}
+
+function setupThreadAction(thread) {
+    if (toggleActionBox(thread.id, localStorage.getItem(USER_KEY))) {
+        const editButton = document.querySelector("#editThreadButton");
+        const deleteButton = document.querySelector("#deleteThreadButton");
+        //event listener for thread's interaction
+        editButton.addEventListener("click", () => {
+            if (thread.lock) {
+                showErrorMessage(`This thread ${thread.id} is locked`, "showThreadError");
+                return;
+            }
+            else {
+                setupEditThread(thread);
+            }
+        });
+
+        deleteButton.addEventListener("click", () => {
+            deleteThread(thread.id)
+                .catch(error => {
+                    console.error(error);
+                });
+        });
+    }
+}
+
 function updateLikeNumber(thread, liked) {
     let likeCount = parseInt(document.querySelector("#threadLikes").textContent); // Get current like count as a number
     liked ? likeCount += 1 : likeCount -= 1;
@@ -260,7 +271,6 @@ function updateLikeNumber(thread, liked) {
 
     threadListItem.querySelector(`.threadTime`).textContent = `${datePart} | ${newLikesText}`;
 }
-
 
 function newThread(title, isPublic, content) {
     return post(API + "/thread", { title, isPublic, content }, localStorage.getItem(TOKEN_KEY))

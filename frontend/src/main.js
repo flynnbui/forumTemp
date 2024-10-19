@@ -58,8 +58,6 @@ function setupRegisterPage() {
         e.preventDefault();
     })
 }
-
-
 function setupForumPage() {
     //Logout button
     const logoutButton = document.getElementById("logout");
@@ -75,10 +73,7 @@ function setupForumPage() {
     // Get thread list
     getThreadList(start);
 }
-
-
-
-
+ 
 
 
 document.addEventListener("DOMContentLoaded", function () {
