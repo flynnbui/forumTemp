@@ -1,7 +1,7 @@
 import { TOKEN_KEY } from './config.js';
-import { login, logout, register } from './authService.js'
-import { setupNewThread, getThreadList } from './threadService.js';
-import { showPage, showErrorMessage, formatDate } from './helpers.js';
+import { login, logout, register } from './Services/authService.js'
+import { setupNewThread, getThreadList } from './Services/threadService.js';
+import { showPage, showErrorMessage } from './helpers.js';
 console.log("Let's go!");
 
 let start = 0;
@@ -9,7 +9,6 @@ let start = 0;
 function isSession() {
     if (localStorage.getItem(TOKEN_KEY)) {
         showPage("forumPage");
-        getThreadList();
     }
     else {
         showPage("loginPage");
@@ -61,7 +60,9 @@ function setupRegisterPage() {
 function setupForumPage() {
     //Logout button
     const logoutButton = document.getElementById("logout");
-    logoutButton.addEventListener('click', logout);
+    logoutButton.addEventListener('click', () => {
+        logout()
+    });
 
     //Add button
     document.querySelectorAll(".add").forEach(button => {
@@ -73,7 +74,7 @@ function setupForumPage() {
     // Get thread list
     getThreadList(start);
 }
- 
+
 
 
 document.addEventListener("DOMContentLoaded", function () {

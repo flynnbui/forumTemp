@@ -30,7 +30,6 @@ export function fileToDataUrl(file) {
   return dataUrlPromise;
 }
 
-
 export function post(url, body = null, token = null) {
   const headers = {
     'Content-Type': 'application/json',
@@ -66,10 +65,10 @@ export function get(url, query = null, token = null) {
 
   if (token) {
     headers['Authorization'] = `Bearer ${token}`;
+  } else {
+    return Promise.reject(new Error("No token provided!"));
   }
-  else {
-    Promise.reject(new Error("No token provided!"));
-  }
+
   if (query !== null) {
     const queryString = new URLSearchParams(query).toString();
     requestURL += `?${queryString}`;
@@ -80,7 +79,6 @@ export function get(url, query = null, token = null) {
     method: 'GET',
     headers: headers,
   };
-
   return fetch(requestURL, requestOptions)
     .then(response => {
       if (!response.ok) {
@@ -89,7 +87,13 @@ export function get(url, query = null, token = null) {
       return response.json();
     })
     .catch(error => {
-      throw error;
+      if (error.message === 'Failed to fetch' || error.message === 'NetworkError') {
+        console.error(`Network error:`, error);
+        throw new NetworkError('Network error occurred while fetching data');
+      } else {
+        console.error(`Error:`, error);
+        throw error;
+      }
     });
 }
 
@@ -191,6 +195,3 @@ export function formatDate(dateString) {
 
   return `${day} ${month} ${year}`;
 }
-
-
-
