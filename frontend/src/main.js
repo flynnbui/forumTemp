@@ -7,13 +7,18 @@ console.log("Let's go!");
 let start = 0;
 
 function isSession() {
-    if (localStorage.getItem(TOKEN_KEY)) {
-        showPage("forumPage");
-    }
-    else {
-        showPage("loginPage");
-    }
+    getThreadList(start)
+        .then(() => {
+            showPage("forumPage");
+        })
+        .catch(error => {
+            console.error(error);
+            if (error.message === "No token provided!") {
+                showPage("loginPage");
+            }
+        })
 }
+
 function setupLoginPage() {
     const loginForm = document.getElementById("loginForm");
     // Toggle between login and register pages
@@ -71,8 +76,7 @@ function setupForumPage() {
         });
     });
 
-    // Get thread list
-    getThreadList(start);
+
 }
 
 

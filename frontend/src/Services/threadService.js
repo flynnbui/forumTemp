@@ -140,7 +140,9 @@ function setupThreadDetail(thread, author) {
         if (author.image) {
             clone.querySelector('#authorAvatar').src = author.image;
         }
-        clone.querySelector('#threadAuthor').textContent = author.name;
+        const threadAuthor = clone.querySelector('.threadAuthor');
+        threadAuthor.textContent = author.name;
+        threadAuthor.id = author.id;
         clone.querySelector('#threadTime').textContent = formatDate(thread.createdAt);
         clone.querySelector('#threadContent').textContent = thread.content;
         clone.querySelector('#threadLikes').textContent = `${thread.likes.length}`;
@@ -159,7 +161,12 @@ function setupThreadDetail(thread, author) {
         handleWatchButton(thread, userKey);
     }
 }
+// function setupProfileView(authorId) {
+//     const threadAuthor = document.getElementById(authorId);
+//     threadAuthor.addEventListener("click", ()=> {
 
+//     })
+// }
 function setupThreadAction(thread) {
     if (toggleActionBox(thread.id)) {
         const editButton = document.querySelector("#editThreadButton");
@@ -197,9 +204,6 @@ export function getThreadList(start) {
                 }
             }
         })
-        .catch(error => {
-            console.error(error);
-        });
 }
 
 export function populateThreadList(id, newThread = null) {
@@ -275,10 +279,11 @@ function deleteThread(id) {
                 clearThreadContainer();
 
                 // Invalidate the cache
-                invalidateThreadCache(id);
+                // invalidateThreadCache(id);
 
                 // Fetch the latest thread and show it
                 const latestThread = document.querySelector(".threadItem");
+                console.log(latestThread);
                 if (latestThread) {
                     fetchThread(latestThread.id)
                         .then(response => { setupThreadDetail(response.threadDetails, response.authorDetails); });
@@ -524,4 +529,46 @@ function cacheThread(threadId) {
         };
         saveThreadCache(cache);
     });
+}
+
+function storeOwnedThread(threadId) {
+    let ownedThread = [];
+    let ownedThreads = localStorage.getItem(THREAD_KEY);
+    if (ownedThreads) {
+        ownedThreads = JSON.parse(ownedThreads);
+    } else {
+        ownedThreads = [];
+    }
+    if (!ownedThread.includes(threadId)) {
+        ownedThread.push(threadId);
+    }
+    localStorage.setItem(THREAD_KEY, JSON.stringify(ownedThreads));
+}
+
+function removeOwnedThread(threadId) {
+    let ownedThreads = localStorage.getItem(THREAD_KEY);
+    if (ownedThreads) {
+        ownedThreads = JSON.parse(ownedThreads);
+    } else {
+        ownedThreads = [];
+    }
+    const index = ownedThreads.indexOf(threadId);
+    if (index !== -1) {
+        ownedThreads.splice(index, 1);
+        localStorage.setItem(THREAD_KEY, JSON.stringify(ownedThreads));
+    }
+}
+
+function removeFromThreadList(id) {
+    const thread = document.getElementById(id);
+    if (thread) {
+        thread.remove();
+    }
+}
+
+export function removeThreadList() {
+    const threadList = document.getElementById("threadList");
+    if(threadList) {
+        threadList.replaceChildren();
+    }
 }

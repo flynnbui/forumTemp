@@ -1,6 +1,6 @@
 import { API, USER_DETAIL_KEY, TOKEN_KEY, USER_KEY } from '../config.js';
 import { post, showPage } from '../helpers.js';
-import { getThreadList } from './threadService.js';
+import { getThreadList, removeThreadList } from './threadService.js';
 import { getProfile } from './userService.js';
 
 
@@ -17,11 +17,10 @@ export function login(email, password) {
                 getProfile(response.userId, response.token)
                     .then(userDetail => {
                         storeSession(response.token, response.userId, userDetail);
+                        console.log('Token stored successfully.');
+                        getThreadList(0);
+                        showPage('forumPage');
                     })
-                console.log('Token stored successfully.');
-                showPage('forumPage');
-                // Get thread list
-                getThreadList(0);
             } else {
                 throw new Error('No token returned from server');
             }
@@ -42,6 +41,7 @@ export function register(email, name, password, confirmPassword) {
                             storeSession(response.token, response.userId, userDetail);
                             console.log('Token stored successfully.');
                             showPage('forumPage');
+                            getThreadList(0);
                             resolve(response);
                         })
                 } else {
@@ -56,6 +56,7 @@ export function logout() {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
     localStorage.removeItem(USER_DETAIL_KEY);
+    removeThreadList();
     showPage('loginPage');
 }
 

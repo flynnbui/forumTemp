@@ -296,16 +296,16 @@
                 <div id="newThreadError"></div>
                 <!-- Title input -->
                 <div class="grid grid-cols-1 sm:grid-cols-4 gap-2 items-center">
-                    <label for="editTitle" class="text-lg sm:text-xl text-white">Title</label>
-                    <input id="editTitle" name="editTitle" type="text" required
+                    <label for="newTitle" class="text-lg sm:text-xl text-white">Title</label>
+                    <input id="newTitle" name="editTitle" type="text" required
                         class="col-span-1 sm:col-span-3 w-full rounded-md border-0 py-1.5 text-white bg-gray-700 shadow-sm ring-1 ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-500 sm:text-sm sm:leading-6"
                         placeholder="Write your thread title..." />
                 </div>
 
                 <!-- Content input -->
                 <div class="grid grid-cols-1 sm:grid-cols-4 gap-2 items-start">
-                    <label for="editContent" class="text-lg sm:text-xl text-white pt-1.5">Content</label>
-                    <textarea id="editContent" name="content" rows="6"
+                    <label for="newContent" class="text-lg sm:text-xl text-white pt-1.5">Content</label>
+                    <textarea id="newContent" name="content" rows="6"
                         class="col-span-1 sm:col-span-3 w-full rounded-md border-0 py-1.5 text-white bg-gray-800 shadow-sm ring-1 ring-gray-700 placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-500 sm:text-sm sm:leading-6 resize-none"
                         style="min-height: 150px;" placeholder="Write your thread content..."></textarea>
                 </div>
@@ -450,9 +450,9 @@
                                 class="ml-4 w-12 h-12 flex items-center justify-center border-2 border-gray-700 rounded-full bg-gray-600">
                         </div>
                         <div class="text-pink-300 ml-3">
-                            <div id="threadAuthor">
+                            <button class="threadAuthor" id="">
                                 <!-- Author's name -->
-                            </div>
+                            </button>
                             <div id="threadTime" class="text-gray-400 text-sm">
                                 <!-- Time posting -->
                             </div>
@@ -579,7 +579,7 @@
                         <h2 class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-white p-4">
                             Watch</h2>
                         <div class="flex-grow overflow-hidden">
-                            <section id="watchThreadBoxSection" class="h-full overflow-y-auto">
+                            <section id="watchThreadBox" class="h-full overflow-y-auto">
                                 <!-- Watched thread content -->
                             </section>
                         </div>
@@ -744,10 +744,10 @@
     <!-- Profile -->
     <!-- Edit Profile Modal -->
     <div id="editProfileModal" tabindex="-1"
-        class=" fixed inset-0 z-50 overflow-y-auto overflow-x-hidden flex items-center justify-center">
+        class="hidden fixed inset-0 z-50 overflow-y-auto overflow-x-hidden flex items-center justify-center">
         <div class="relative p-4 w-full max-w-md">
             <!-- Modal content -->
-            <div class="hidden relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
                 <!-- Modal header -->
                 <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Edit Profile</h3>
@@ -818,15 +818,19 @@
 
 
     <!-- Thread item Template -->
-    <template id="threadItem">
+    <template id="profileThreadItem">
         <div class="w-full">
-            <button class="threadItem block w-full bg-gray-800 p-4 hover:bg-gray-700 text-left mb-2">
+            <button class="profileThreadItem block w-full bg-gray-800 p-4 hover:bg-gray-700 text-left mb-2">
                 <div class="flex flex-col justify-between overflow-hidden">
                     <div class="overflow-hidden">
-                        <h3 class="text-pink-200 text-sm font-semibold truncate threadTitle">
+                        <h3 class="text-pink-200 text-sm font-semibold truncate profileThreadTitle">
                             <!-- Thread's title -->
                         </h3>
-                        <p class="text-xs text-gray-200 truncate threadTime">
+                        <p class="text-xs text-gray-200 truncate profileThreadAuthor">
+                            <!-- Thread's time & like -->
+                             
+                        </p>
+                        <p class="text-xs text-gray-200 truncate profileThreadTime">
                             <!-- Thread's time & like -->
                         </p>
                     </div>
