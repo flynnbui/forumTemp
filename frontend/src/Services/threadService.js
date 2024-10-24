@@ -1,6 +1,6 @@
 import { API, TOKEN_KEY, USER_KEY, THREAD_KEY, USER_DETAIL_KEY, THREAD_CACHE_KEY, threadTime } from '../config.js';
-import { post, get, put, deleteRequest, showErrorMessage, formatDate } from '../helpers.js';
-import { getProfile } from './userService.js';
+import { post, get, put, deleteRequest, showErrorMessage, formatDate, clearContainer } from '../helpers.js';
+import { getProfile, setupProfileDetail } from './userService.js';
 import { setupCommentSection } from './commentService.js';
 
 
@@ -8,7 +8,7 @@ import { setupCommentSection } from './commentService.js';
 
 //Thread Setup Functions
 export function setupNewThread() {
-    clearThreadContainer();
+    clearContainer("threadContainer");
     const template = document.getElementById("newThread");
     const clone = template.content.cloneNode(true);
 
@@ -19,7 +19,7 @@ export function setupNewThread() {
     const postButton = threadContainer.querySelector("#post");
 
     cancelButton.addEventListener("click", () => {
-        clearThreadContainer();
+        clearContainer("threadContainer");
     });
 
     postButton.addEventListener("click", () => {
@@ -55,7 +55,7 @@ export function setupNewThread() {
 }
 
 function setupEditThread(thread) {
-    clearThreadContainer();
+    clearContainer("threadContainer");
     const template = document.getElementById("editThread");
     const clone = template.content.cloneNode(true);
 
@@ -82,7 +82,7 @@ function setupEditThread(thread) {
     const saveButton = threadContainer.querySelector("#saveEdit");
 
     cancelButton.addEventListener("click", () => {
-        clearThreadContainer();
+        clearContainer("threadContainer");
     });
 
     saveButton.addEventListener("click", () => {
@@ -128,8 +128,8 @@ function setupEditThread(thread) {
     });
 }
 
-function setupThreadDetail(thread, author) {
-    clearThreadContainer();
+export function setupThreadDetail(thread, author) {
+    clearContainer("threadContainer");
     var template = document.getElementById('showThread');
     var clone = template.content.cloneNode(true);
 
@@ -156,17 +156,19 @@ function setupThreadDetail(thread, author) {
 
         setupCommentSection(thread, JSON.parse(localStorage.getItem(USER_DETAIL_KEY)));
         setupThreadAction(thread);
+        setupProfileView();
         let userKey = Number(localStorage.getItem(USER_KEY));
         handleLikeButton(thread, userKey);
         handleWatchButton(thread, userKey);
     }
 }
-// function setupProfileView(authorId) {
-//     const threadAuthor = document.getElementById(authorId);
-//     threadAuthor.addEventListener("click", ()=> {
-
-//     })
-// }
+function setupProfileView() {
+    const threadContainer = document.querySelector("#threadContainer");
+    const threadAuthor = threadContainer.querySelector(".threadAuthor");
+    threadAuthor.addEventListener("click", () => {
+        setupProfileDetail(threadAuthor.id)
+    })
+}
 function setupThreadAction(thread) {
     if (toggleActionBox(thread.id)) {
         const editButton = document.querySelector("#editThreadButton");
@@ -190,20 +192,23 @@ function setupThreadAction(thread) {
     }
 }
 
-export function getThreadList(start) {
-    return get(API + "/threads", { start }, localStorage.getItem(TOKEN_KEY))
-        .then(response => {
-            if (response.error) {
-                throw new Error(response.error);
-            } else {
-                if (response.length > 0) {
-                    response.forEach(thread => {
-                        populateThreadList(thread);
-                    });
-                    return response.length;
-                }
+export function getThreadList(start = 0) {
+    return loadAllThreads()
+        .then(threads => {
+            const totalThreads = threads.length;
+            const threadHeight = 100;
+            let numberOfThreadsToLoad = Math.floor(window.innerHeight / threadHeight);
+            if (start >= totalThreads) {
+                console.log("No more threads to load.");
+                return 0;
             }
-        })
+            let loadAll = Math.min(totalThreads - start, numberOfThreadsToLoad);
+            return loadThreads(start, loadAll)
+                .then(fetchedThreads => {
+                    fetchedThreads.forEach(thread => populateThreadList(thread));
+                    return fetchedThreads.length;
+                });
+        });
 }
 
 export function populateThreadList(id, newThread = null) {
@@ -225,8 +230,15 @@ function createThreadListItem(thread, author, newThread) {
     let likeString = thread.likes.length != 1 ? "likes" : "like";
     clone.querySelector(".threadTime").textContent = `${formatDate(thread.createdAt)} | ${thread.likes.length} ` + likeString;
 
-    const threadListContainer = newThread ? document.getElementById("newThreadBox") : document.getElementById("threadList");
-    threadListContainer.appendChild(clone);
+    if (newThread) {
+        const threadListContainer = document.getElementById("newThreadBox");
+        threadListContainer.prepend(clone);
+    }
+    else {
+        const threadListContainer = document.getElementById("threadList");
+        threadListContainer.appendChild(clone);
+    }
+
 
     threadItem.addEventListener('click', () => {
         fetchThread(thread.id)
@@ -276,7 +288,7 @@ function deleteThread(id) {
                 console.log(`Delete thread ${id} successfully!`);
                 removeOwnedThread(id);
                 removeFromThreadList(id);
-                clearThreadContainer();
+                clearContainer("threadContainer");
 
                 // Invalidate the cache
                 // invalidateThreadCache(id);
@@ -309,6 +321,39 @@ export function getThread(id) {
             return null;
         });
 }
+
+function fetchThreads(start, expectedCount, allThreads) {
+    return get(API + "/threads", { start }, localStorage.getItem(TOKEN_KEY))
+        .then(response => {
+            if (response.error) {
+                throw new Error(response.error);
+            } else if (response.length > 0) {
+                allThreads.push(...response);
+                const newStart = start + response.length;
+                if (expectedCount !== undefined && allThreads.length >= expectedCount) {
+                    return allThreads.slice(0, expectedCount);
+                } else {
+                    return fetchThreads(newStart, expectedCount, allThreads);
+                }
+            } else {
+                return allThreads;
+            }
+        });
+}
+
+// Function to load a specific number of threads
+function loadThreads(start, limit) {
+    let allThreads = [];
+    return fetchThreads(start, limit, allThreads);
+}
+
+// Function to load all available threads
+export function loadAllThreads() {
+    const start = 0;
+    let allThreads = [];
+    return fetchThreads(start, undefined, allThreads);
+}
+
 
 
 // Thread Interaction (Like, Watch)
@@ -445,11 +490,6 @@ function watchThread(id, turnon) {
 }
 
 // Utility 
-export function clearThreadContainer() {
-    const threadContainer = document.getElementById("threadContainer");
-    threadContainer.replaceChildren();
-}
-
 function toggleActionBox(threadId) {
     let ownedThreads = localStorage.getItem(THREAD_KEY);
     if (ownedThreads) {
@@ -566,9 +606,4 @@ function removeFromThreadList(id) {
     }
 }
 
-export function removeThreadList() {
-    const threadList = document.getElementById("threadList");
-    if(threadList) {
-        threadList.replaceChildren();
-    }
-}
+

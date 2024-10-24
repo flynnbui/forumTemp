@@ -1,3 +1,5 @@
+import { NetworkError } from "../src/Exceptions/NetworkError.js";
+
 /**
  * Given a js file object representing a jpg or png image, such as one taken
  * from a html file input element, return a promise which resolves to the file
@@ -72,7 +74,6 @@ export function get(url, query = null, token = null) {
   if (query !== null) {
     const queryString = new URLSearchParams(query).toString();
     requestURL += `?${queryString}`;
-    console.log(requestURL);
   }
 
   const requestOptions = {
@@ -82,6 +83,9 @@ export function get(url, query = null, token = null) {
   return fetch(requestURL, requestOptions)
     .then(response => {
       if (!response.ok) {
+        if (response.status == "403") {
+          throw new Error(response.statusText);
+        }
         throw new Error(response.error);
       }
       return response.json();
@@ -116,7 +120,6 @@ export function put(url, body = null, token = null) {
     headers: headers,
     body: body ? JSON.stringify(body) : null
   }
-
   return fetch(url, options)
     .then(response => {
       if (!response.ok) {
@@ -194,4 +197,14 @@ export function formatDate(dateString) {
   const year = date.getFullYear();
 
   return `${day} ${month} ${year}`;
+}
+
+export function clearContainer(placeholder) {
+  const container = document.getElementById(placeholder);
+  if (container) {
+    container.replaceChildren();
+  }
+  else {
+    console.error(`Container with ID '${placeholder}' not found.`);
+  }
 }

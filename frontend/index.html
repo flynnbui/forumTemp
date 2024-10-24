@@ -146,45 +146,46 @@
 
     <!-- Forum Page -->
     <div id="forumPage">
-        <div class="flex flex-row w-full h-screen">
-
-            <!-- Navigation bar -->
-            <nav class=" flex flex-col place-content-start h-screen">
+        <div class="flex flex-col md:flex-row w-full h-screen">
+            <!-- Navigation bar - horizontal on mobile, vertical on desktop -->
+            <nav class="flex flex-row md:flex-col h-12 md:h-screen w-full md:w-16 bg-inherit shrink-0">
                 <!-- Logo -->
-                <div class="text-center h-1/6 ">
+                <div class="hidden md:flex text-center md:h-1/6 justify-center items-center">
                     <div class="text-white">
                         <button class="home">
                             Qanda 🦘
                         </button>
                     </div>
                 </div>
-                <div class="h-4/6 flex-col justify-center content-center w-16">
-                    <div class="text-center w-16 h-16 text-white">
-                        <button class="home text-center w-16 h-16 text-white md:hover:bg-sky-900 aria-label=" Home"
-                            title="Home">
+
+                <!-- Navigation buttons -->
+                <div class="flex flex-row md:flex-col h-full md:h-4/6 justify-around md:justify-start w-full md:w-16">
+                    <div class="text-center h-12 md:h-16 text-white">
+                        <button class="home text-center w-16 h-12 md:h-16 text-white md:hover:bg-sky-900"
+                            aria-label="Home" title="Home">
                             <i class="fa-solid fa-house"></i>
                         </button>
                     </div>
-                    <div class="text-center w-16 h-16 text-white">
-                        <button id="favorites" class="text-center w-16 h-16 text-white md:hover:bg-sky-900"
+                    <div class="text-center h-12 md:h-16 text-white">
+                        <button id="favorites" class="text-center w-16 h-12 md:h-16 text-white md:hover:bg-sky-900"
                             aria-label="Favorites" title="Favorites">
                             <i class="fa-solid fa-heart"></i>
                         </button>
                     </div>
-                    <div class="text-center w-16 h-16 text-white">
-                        <button class="add text-center w-16 h-16 text-white md:hover:bg-sky-900"
+                    <div class="text-center h-12 md:h-16 text-white">
+                        <button class="add text-center w-16 h-12 md:h-16 text-white md:hover:bg-sky-900"
                             aria-label="Add new thread" title="Add new thread">
                             <i class="fa-solid fa-square-plus"></i>
                         </button>
                     </div>
-                    <div class="text-center w-16 h-16 text-white">
-                        <button id="profile" class="text-center w-16 h-16 text-white md:hover:bg-sky-900"
+                    <div class="text-center h-12 md:h-16 text-white">
+                        <button id="profile" class="text-center w-16 h-12 md:h-16 text-white md:hover:bg-sky-900"
                             aria-label="Profile" title="Profile">
                             <i class="fa-solid fa-user"></i>
                         </button>
                     </div>
-                    <div class="text-center w-16 h-16 text-white">
-                        <button id="logout" class="text-center w-16 h-16 text-white md:hover:bg-sky-900"
+                    <div class="text-center h-12 md:h-16 text-white">
+                        <button id="logout" class="text-center w-16 h-12 md:h-16 text-white md:hover:bg-sky-900"
                             aria-label="Logout" title="Logout">
                             <i class="fa-solid fa-arrow-right-from-bracket"></i>
                         </button>
@@ -192,17 +193,19 @@
                 </div>
             </nav>
 
-            <!-- Main -->
-            <div class="flex flex-grow flex-col h-screen">
+            <!-- Main Content -->
+            <div class="flex flex-grow flex-col h-[calc(100vh-3rem)] md:h-screen" id="mainView">
                 <!-- Web's Header -->
-                <div class="text-white font-bold text-center text-2xl leading-7 my-5">
+                <div class="hidden md:block text-white font-bold text-center text-2xl leading-7 my-2 md:my-5">
                     Home
                 </div>
 
-                <div class="flex flex-grow overflow-hidden">
+                <!-- Content Container -->
+                <div class="flex flex-col md:flex-row flex-grow overflow-hidden px-2 md:px-0">
                     <!-- Threads List -->
-                    <div class="w-96 flex flex-col border-2 rounded-t-xl border-gray-500 overflow-hidden">
-                        <div class="flex w-full text-white font-bold items-center p-3">
+                    <div
+                        class="w-full md:w-96 flex flex-col border-2 rounded-t-xl border-gray-500 overflow-hidden h-1/3 md:h-full mb-2 md:mb-0">
+                        <div class="flex w-full text-white font-bold items-center p-2 md:p-3">
                             <div class="text-xl leading-7 w-3/4">Threads</div>
                             <div class="flex flex-grow items-center justify-center">
                                 <button class="flex flex-grow items-center justify-center" aria-label="Add new thread">
@@ -221,15 +224,14 @@
                     </div>
 
                     <!-- Thread Content -->
-                    <div class="flex-grow flex flex-col items-center w-full">
+                    <div class="flex-grow flex flex-col items-center w-full h-2/3 md:h-full">
                         <div id="threadContainer"
-                            class="flex w-11/12 min-h-full -ml-6 border-2 rounded-t-xl border-gray-500 overflow-hidden flex-col">
+                            class="flex w-full md:w-11/12 h-full md:-ml-6 border-2 rounded-t-xl border-gray-500 overflow-hidden flex-col">
                             <!-- Threads will be inserted here -->
                         </div>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 
@@ -410,7 +412,7 @@
     <!-- Show Thread -->
     <template id="showThread">
         <!-- Thread's Header -->
-        <div class="flex w-full h-12 overflow-hidden">
+        <div class="hidden md:flex w-full h-12 overflow-hidden">
             <div class="flex items-center justify-center w-full h-12">
                 <div class="flex w-full text-white text-2xl overflow-hidden">
                     <div class="ml-3 w-full">
@@ -531,55 +533,67 @@
 
     <!-- Show Profile -->
     <template id="showProfile">
-        <div class="flex flex-col w-11/12 mx-auto mt-5 h-screen">
+        <div class="viewProfile flex flex-col w-full md:w-11/12 mx-auto mt-5 h-screen px-4">
             <!-- Profile information -->
             <article class="mb-4 flex-shrink-0">
-                <div class="max-w-2xl mx-auto px-4">
+                <div class="max-w-2xl mx-auto">
                     <div
-                        class="flex flex-row w-full h-20 items-center bg-gradient-to-r from-fuchsia-500 to-cyan-500 border-2 rounded-lg">
-                        <div class="flex">
-                            <!-- Profile's Avatar -->
+                        class="flex flex-row gap-y-2 justify-center bg-gradient-to-r from-fuchsia-500 to-cyan-500 border-2 rounded-lg p-2 md:p-4">
+                        <!-- Profile Avatar Section -->
+                        <div class="flex flex-shrink-0 items-center justify-center md:justify-start">
                             <img id="profileAvatar" src="src/Assets/user-solid.svg"
-                                class="ml-4 w-12 h-12 flex items-center justify-center border-2 border-gray-700 rounded-full bg-gray-600">
+                                class="ml-0 md:ml-4 w-8 h-8 md:w-12 md:h-12 flex items-center justify-center border-2 border-gray-700 rounded-full bg-gray-600">
                         </div>
-                        <div class="flex flex-grow ml-2">
-                            <div class="flex flex-col w-full text-white max-h-full">
-                                <!-- Profile  -->
-                                <div id="profileName">
-                                    <!-- Profile's name -->
+    
+                        <!-- Profile Info and Controls -->
+                        <div class="flex flex-col md:flex-row flex-grow gap-2">
+                            <!-- Name and Email --->
+                            <div
+                                class="flex flex-col text-white flex-grow md:ml-2 items-start">
+                                <div id="profileName" class="text-sm md:text-lg font-semibold"></div>
+                                <div id="profileEmail" class="text-xs md:text-sm"></div>
+                            </div>
+    
+                            <!-- Admin Badge and Edit Button -->
+                            <div class="flex flex-col md:flex-row gap-2 items-center">
+                                <div class="w-full md:w-auto px-2 md:px-4 py-1 md:py-2 text-white font-semibold">
+                                    <div class="currentRole text-xs md:text-sm"></div>
                                 </div>
-                                <div id="profileEmail">
-                                    <!-- Profile's email -->
-                                </div>
+                                <button
+                                    class="editProfileButton w-full md:w-auto px-4 md:px-6 py-1 md:py-2 rounded-lg bg-gradient-to-r from-slate-500 to-slate-800 text-white font-semibold shadow-lg hover:from-slate-600 hover:to-slate-900">
+                                    <div class="text-xs md:text-sm">Edit Profile</div>
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
             </article>
-
-            <!-- Owned & watch threads list -->
-            <div class="flex-grow overflow-hidden max-w-2xl mx-auto px-4 w-full">
-                <div class="flex flex-row h-full">
+    
+            <!-- Threads and Watch Lists Container -->
+            <div class="flex-grow overflow-hidden max-w-2xl mx-auto w-full">
+                <div class="flex flex-col md:flex-row h-[calc(100vh-12rem)] md:h-full">
                     <!-- Owned Threads -->
-                    <div class="w-1/2 flex flex-col h-full pr-2">
-                        <h2 class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-white p-4">
-                            Threads</h2>
-                        <div class="flex-grow overflow-hidden">
-                            <section id="ownedThreadBox" class="h-full overflow-y-auto">
+                    <div class="w-full md:w-1/2 flex flex-col h-1/4 md:h-full md:pr-2 mb-2 md:mb-0">
+                        <h2 class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-white p-2 md:p-4 flex-shrink-0">
+                            Threads
+                        </h2>
+                        <div class="flex-grow overflow-auto">
+                            <section id="ownedThreadBox" class="h-full">
                                 <!-- Owned thread content -->
                             </section>
                         </div>
                     </div>
-
-                    <!-- Vertical Line Separator -->
-                    <div class="w-px bg-gray-500 mx-2 h-full"></div>
-
+    
+                    <!-- Vertical Line Separator - Hidden on mobile -->
+                    <div class="hidden md:block w-px bg-gray-500 mx-2 h-full"></div>
+    
                     <!-- Watched Threads -->
-                    <div class="w-1/2 flex flex-col h-full pl-2">
-                        <h2 class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-white p-4">
-                            Watch</h2>
-                        <div class="flex-grow overflow-hidden">
-                            <section id="watchThreadBox" class="h-full overflow-y-auto">
+                    <div class="w-full md:w-1/2 flex flex-col h-1/4 md:h-full md:pl-2">
+                        <h2 class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-white p-2 md:p-4 flex-shrink-0">
+                            Watch
+                        </h2>
+                        <div class="flex-grow overflow-auto">
+                            <section id="watchThreadBox" class="h-full">
                                 <!-- Watched thread content -->
                             </section>
                         </div>
@@ -598,9 +612,9 @@
                 <div class="flex items-center">
                     <p class="inline-flex items-center mr-3 text-sm text-gray-900 text-white font-semibold">
                         <img class="commentIMG mr-2 w-6 h-6 rounded-full" src="src/Assets/user-solid.svg" alt="Avatar">
-                    <div class="text-white commentAuthor">
-                        <!-- Comment's author -->
-                    </div>
+                        <button class="text-white commentAuthor">
+                            <!-- Comment's author -->
+                        </button>
                     </p>
                     <p class="ml-4 text-sm text-gray-400 commentTime">
                     </p>
@@ -637,10 +651,10 @@
             <div class="flex justify-between items-center mb-2">
                 <div class="flex items-center">
                     <p class="inline-flex items-center mr-3 text-sm text-gray-900 text-white font-semibold">
-                        <img class=" subcommentIMG w-6 h-6 rounded-full" src="src/Assets/user-solid.svg" alt="Avatar">
-                    <div class="text-white subCommentAuthor">
-                        <!-- Comment's author -->
-                    </div>
+                        <img class="subcommentIMG w-6 h-6 rounded-full" src="src/Assets/user-solid.svg" alt="Avatar">
+                        <button class=" ml-2 text-white subCommentAuthor">
+                            <!-- Comment's author -->
+                        </button>
                     </p>
                     <p class="ml-4 subCommentTime text-sm text-gray-400">
                     </p>
@@ -742,9 +756,8 @@
     </div>
 
     <!-- Profile -->
-    <!-- Edit Profile Modal -->
-    <div id="editProfileModal" tabindex="-1"
-        class="hidden fixed inset-0 z-50 overflow-y-auto overflow-x-hidden flex items-center justify-center">
+     <!-- Edit Profile Modal -->
+     <div id="editProfileModal" tabindex="-1" class="hidden fixed inset-0 z-50 overflow-y-auto overflow-x-hidden flex items-center justify-center">
         <div class="relative p-4 w-full max-w-md">
             <!-- Modal content -->
             <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
@@ -762,48 +775,42 @@
                     </button>
                 </div>
                 <!-- Modal body -->
-                <form id="editProfileForm" class="p-4 md:p-5">
+                <form id="editProfileForm" autocomplete="off" class="p-4 md:p-5">
                     <!-- Name Field -->
                     <div class="mb-4">
-                        <label for="userName"
-                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name</label>
-                        <input type="text" id="userName" name="name" required
+                        <label for="editUserName" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name</label>
+                        <input type="text" id="editUserName" name="name" autocomplete="off" required
                             class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border focus:border-primary-600 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                             placeholder="Your Name">
                     </div>
                     <!-- Email Field -->
                     <div class="mb-4">
-                        <label for="userEmail"
-                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email Address</label>
-                        <input type="email" id="userEmail" name="email" required
+                        <label for="editUserEmail" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email Address</label>
+                        <input type="email" id="editUserEmail" name="email" autocomplete="off" required
                             class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border focus:border-primary-600 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                             placeholder="you@example.com">
                     </div>
                     <!-- Password Field -->
                     <div class="mb-4">
-                        <label for="userPassword"
-                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
-                        <input type="password" id="userPassword" name="password"
+                        <label for="editUserPassword" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
+                        <input type="password" id="editUserPassword" name="password" autocomplete="new-password"
                             class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border focus:border-primary-600 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                            placeholder="••••••••">
-                        </p>
+                            placeholder="*********">
                     </div>
                     <!-- Image Upload Field -->
                     <div class="mb-4">
-                        <label for="userImage"
-                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Profile Image</label>
-                        <input type="file" id="userImage" name="image" accept="image/*"
+                        <label for="editUserImage" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Profile Image (png, jpg, jpeg)</label>
+                        <input type="file" id="editUserImage" name="image" accept="image/*" autocomplete="off"
                             class="block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:bg-gray-600 dark:border-gray-500 dark:text-white focus:outline-none">
                     </div>
-                    <p class="my-3 text-xs text-gray-500 dark:text-gray-300">Leave blank to keep current information.
+                    <p class="my-3 text-xs text-gray-500 dark:text-gray-300">Leave blank to keep current information.</p>
                     <!-- Role Dropdown (Visible Only to Admins) -->
-                    <div id="adminRoleSection" class="mb-4 hidden">
-                        <label for="userRole"
-                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Role</label>
-                        <select id="userRole" name="role"
+                    <div id="adminRoleSection" class="mb-4">
+                        <label for="userRole" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Role</label>
+                        <select id="userRole" name="role" disabled autocomplete="off"
                             class="block w-full p-2.5 text-sm text-gray-900 bg-gray-50 rounded-lg border focus:border-primary-600 dark:bg-gray-600 dark:border-gray-500 dark:text-white">
-                            <option value="user">User</option>
-                            <option value="admin">Admin</option>
+                            <option value="false">User</option>
+                            <option value="true">Admin</option>
                         </select>
                     </div>
                     <!-- Save Changes Button -->
@@ -815,6 +822,7 @@
             </div>
         </div>
     </div>
+    
 
 
     <!-- Thread item Template -->
@@ -828,7 +836,7 @@
                         </h3>
                         <p class="text-xs text-gray-200 truncate profileThreadAuthor">
                             <!-- Thread's time & like -->
-                             
+
                         </p>
                         <p class="text-xs text-gray-200 truncate profileThreadTime">
                             <!-- Thread's time & like -->

@@ -1,6 +1,6 @@
 import { get, post, put, showErrorMessage } from "../helpers.js";
 import { API, TOKEN_KEY, USER_DETAIL_KEY, USER_KEY } from "../config.js";
-import { fetchProfile } from "./userService.js";
+import { fetchProfile, setupProfileDetail } from "./userService.js";
 
 let currentComment = null;
 let currentParentCommentId = null;
@@ -32,7 +32,7 @@ function loadAndRenderComments(thread) {
 }
 
 function renderComment(thread, comment, profileMap, parentElement = null) {
-    const author = profileMap[comment.creatorId] || { name: "Unknown" };
+    const author = profileMap[comment.creatorId];
     const commentElement = createCommentElement(thread, comment, author);
 
     const container = parentElement
@@ -62,6 +62,7 @@ function createCommentElement(thread, comment, author) {
 
     const authorElement = commentElement.querySelector(authorClass);
     authorElement.textContent = author.name;
+    authorElement.id = author.id;
 
     const timeElement = commentElement.querySelector(timeClass);
     timeElement.textContent = formatCommentTime(comment.createdAt, comment.likes.length);
@@ -79,6 +80,7 @@ function createCommentElement(thread, comment, author) {
     editButtonHandler(thread, comment, commentElement);
     replyButtonHandler(thread, comment, commentElement);
     likeButtonHandler(thread, comment, commentElement);
+    setupAuthorCommentProfile(authorElement);
 
     return commentElement;
 }
@@ -230,10 +232,16 @@ function likeButtonHandler(thread, comment, commentElement) {
         const newLikedState = !liked;
         liked = newLikedState;
         likeComment(thread, comment, newLikedState)
-        .catch((error) => {
-            console.error("Error handling like/unlike:", error);
-            liked = !liked;
-        });
+            .catch((error) => {
+                console.error("Error handling like/unlike:", error);
+                liked = !liked;
+            });
+    })
+}
+
+function setupAuthorCommentProfile(authorElement) {
+    authorElement.addEventListener("click", () => {
+        setupProfileDetail(authorElement.id)
     })
 }
 
